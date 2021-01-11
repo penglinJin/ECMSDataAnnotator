@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cjlu.skyline.ecms_data_annotator.api.dao.AnnotatorRecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity" id="annotatorRecordMap">
+        <result property="recordId" column="record_id"/>
+        <result property="labelId" column="label_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="docId" column="doc_id"/>
+        <result property="annotatorTypeCode" column="annotator_type_code"/>
+        <result property="startOffset" column="start_offset"/>
+        <result property="endOffset" column="end_offset"/>
+        <result property="prob" column="prob"/>
+    </resultMap>
+
+
+</mapper>
