@@ -1,4 +1,4 @@
-package cjlu.skyline.ecms_data_annotator.annotatorgateway;
+package cjlu.skyline.ecms_data_annotator.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
