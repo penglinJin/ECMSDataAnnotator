@@ -1,10 +1,10 @@
 package cjlu.skyline.ecms_data_annotator.thirdparty;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ThirdPartyApplicationTests {
+class AnnotatorThirdPartyApplicationTests {
 
 	@Test
 	void contextLoads() {

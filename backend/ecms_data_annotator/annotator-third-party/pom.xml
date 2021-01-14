@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.1</version>
+		<version>2.1.17.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cjlu.skyline.ecms_data_annotator</groupId>
-	<artifactId>third-party</artifactId>
+	<artifactId>annotator-third-party</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>third-party</name>
+	<name>annotator-third-party</name>
 	<description>third-party module for annotator</description>
 
 	<properties>
@@ -22,7 +22,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>cjlu.skyline.ecms_data_annotator</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>annotator-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
@@ -53,6 +53,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

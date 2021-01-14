@@ -3,7 +3,6 @@ package cjlu.skyline.ecms_data_annotator.api.controller;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +34,6 @@ public class ProjectController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("api:project:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = projectService.queryPage(params);
 
@@ -47,7 +45,6 @@ public class ProjectController {
      * 信息
      */
     @RequestMapping("/info/{projectId}")
-    @RequiresPermissions("api:project:info")
     public R info(@PathVariable("projectId") Long projectId){
 		ProjectEntity project = projectService.getById(projectId);
 
@@ -58,7 +55,6 @@ public class ProjectController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("api:project:save")
     public R save(@RequestBody ProjectEntity project){
 		projectService.save(project);
 
@@ -69,7 +65,6 @@ public class ProjectController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("api:project:update")
     public R update(@RequestBody ProjectEntity project){
 		projectService.updateById(project);
 
@@ -80,7 +75,6 @@ public class ProjectController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("api:project:delete")
     public R delete(@RequestBody Long[] projectIds){
 		projectService.removeByIds(Arrays.asList(projectIds));
 

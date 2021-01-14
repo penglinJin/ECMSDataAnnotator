@@ -8,7 +8,7 @@
 
 package cjlu.skyline.ecms_data_annotator.common.xss;
 
-import com.jpl.common.utils.RRException;
+import cjlu.skyline.ecms_data_annotator.common.utils.RRException;
 import org.apache.commons.lang.StringUtils;
 
 /**

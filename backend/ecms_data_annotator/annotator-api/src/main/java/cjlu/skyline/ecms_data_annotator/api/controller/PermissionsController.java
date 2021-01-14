@@ -3,7 +3,6 @@ package cjlu.skyline.ecms_data_annotator.api.controller;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +34,6 @@ public class PermissionsController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("api:permissions:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = permissionsService.queryPage(params);
 
@@ -47,7 +45,6 @@ public class PermissionsController {
      * 信息
      */
     @RequestMapping("/info/{permissionsId}")
-    @RequiresPermissions("api:permissions:info")
     public R info(@PathVariable("permissionsId") Long permissionsId){
 		PermissionsEntity permissions = permissionsService.getById(permissionsId);
 
@@ -58,7 +55,6 @@ public class PermissionsController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("api:permissions:save")
     public R save(@RequestBody PermissionsEntity permissions){
 		permissionsService.save(permissions);
 
@@ -69,7 +65,6 @@ public class PermissionsController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("api:permissions:update")
     public R update(@RequestBody PermissionsEntity permissions){
 		permissionsService.updateById(permissions);
 
@@ -80,7 +75,6 @@ public class PermissionsController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("api:permissions:delete")
     public R delete(@RequestBody Long[] permissionsIds){
 		permissionsService.removeByIds(Arrays.asList(permissionsIds));
 

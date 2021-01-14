@@ -3,7 +3,6 @@ package cjlu.skyline.ecms_data_annotator.api.controller;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +34,6 @@ public class LabelInfoController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("api:labelinfo:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = labelInfoService.queryPage(params);
 
@@ -47,7 +45,6 @@ public class LabelInfoController {
      * 信息
      */
     @RequestMapping("/info/{labelId}")
-    @RequiresPermissions("api:labelinfo:info")
     public R info(@PathVariable("labelId") Long labelId){
 		LabelInfoEntity labelInfo = labelInfoService.getById(labelId);
 
@@ -58,7 +55,6 @@ public class LabelInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("api:labelinfo:save")
     public R save(@RequestBody LabelInfoEntity labelInfo){
 		labelInfoService.save(labelInfo);
 
@@ -69,7 +65,6 @@ public class LabelInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("api:labelinfo:update")
     public R update(@RequestBody LabelInfoEntity labelInfo){
 		labelInfoService.updateById(labelInfo);
 
@@ -80,7 +75,6 @@ public class LabelInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("api:labelinfo:delete")
     public R delete(@RequestBody Long[] labelIds){
 		labelInfoService.removeByIds(Arrays.asList(labelIds));
 

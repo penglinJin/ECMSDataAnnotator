@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ThirdPartyApplication {
+public class AnnotatorThirdPartyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThirdPartyApplication.class, args);
+		SpringApplication.run(AnnotatorThirdPartyApplication.class, args);
 	}
 
 }
