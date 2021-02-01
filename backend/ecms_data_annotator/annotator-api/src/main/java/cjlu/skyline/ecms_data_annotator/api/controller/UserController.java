@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.UserEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.UserService;
@@ -30,10 +26,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @GetMapping("/user/list")
+    public R userList(@RequestParam Map<String, Object> params){
+        PageUtils page = userService.queryPage(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 列表
+     */
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = userService.queryPage(params);
 
@@ -44,7 +51,7 @@ public class UserController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{userId}")
+    @GetMapping("/info/{userId}")
     public R info(@PathVariable("userId") Integer userId){
 		UserEntity user = userService.getById(userId);
 
@@ -54,7 +61,7 @@ public class UserController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public R save(@RequestBody UserEntity user){
 		userService.save(user);
 
@@ -64,7 +71,7 @@ public class UserController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody UserEntity user){
 		userService.updateById(user);
 
@@ -74,7 +81,7 @@ public class UserController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @DeleteMapping("/delete")
     public R delete(@RequestBody Integer[] userIds){
 		userService.removeByIds(Arrays.asList(userIds));
 
