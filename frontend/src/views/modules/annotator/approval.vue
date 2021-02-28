@@ -1,9 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-button type="primary">Import Dataset</el-button>
-      <el-button type="primary">Export Dataset</el-button>
-      <el-button type="danger" disabled>Delete</el-button>
+      <el-button type="primary">ConfirmAll</el-button>
     </el-row>
 
     <el-input
@@ -22,8 +20,10 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column prop="text" label="Text" width="400"> </el-table-column>
-        <el-table-column prop="metadata" label="Metadata" width="400"> </el-table-column>
+        <el-table-column prop="id" label="ID" width="300"> </el-table-column>
+        <el-table-column prop="files" label="Files" width="300"> </el-table-column>
+        <el-table-column prop="annotated_time" label="Annotated time" width="300"> </el-table-column>
+        <el-table-column prop="status" label="Status" width="300"> </el-table-column>
         <el-table-column label="Action">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"

@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-row>
-      <el-button type="primary">Import Dataset</el-button>
-      <el-button type="primary">Export Dataset</el-button>
+      <el-button type="primary">Create Label</el-button>
+      <el-button type="primary">Import Labels</el-button>
       <el-button type="danger" disabled>Delete</el-button>
     </el-row>
 
@@ -22,9 +22,9 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column prop="text" label="Text" width="400"> </el-table-column>
-        <el-table-column prop="metadata" label="Metadata" width="400"> </el-table-column>
-        <el-table-column label="Action">
+        <el-table-column prop="name" label="Name" width="600"> </el-table-column>
+        <el-table-column prop="shortkey" label="Shortkey" width="600"> </el-table-column>
+        <el-table-column label="Color">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
               >修改
