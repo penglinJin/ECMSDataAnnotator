@@ -13,17 +13,17 @@
     ></el-input>
     <div>
       <el-table
-        ref="multipleTable"
-        :data="
-          tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)
-        "
-        tooltip-effect="dark"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        @selection-change="selectionChangeHandle"
+        style="width: 100%;"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column prop="text" label="Text" width="400"> </el-table-column>
-        <el-table-column prop="metadata" label="Metadata" width="400"> </el-table-column>
+        <el-table-column prop="text" label="Text" width="400">
+        </el-table-column>
+        <el-table-column prop="metadata" label="Metadata" width="400">
+        </el-table-column>
         <el-table-column label="Action">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -32,15 +32,16 @@
           </template>
         </el-table-column>
       </el-table>
-      <div style="text-align: center;margin-top: 30px;">
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="total"
-          @current-change="current_change"
-        >
-        </el-pagination>
-      </div>
+      <el-pagination
+        @size-change="sizeChangeHandle"
+        @current-change="currentChangeHandle"
+        :current-page="pageIndex"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="totalPage"
+        layout="total, sizes, prev, pager, next, jumper"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
