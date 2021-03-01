@@ -1,14 +1,11 @@
 package cjlu.skyline.ecms_data_annotator.api.controller;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.SrcDocService;
@@ -29,6 +26,11 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
 public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;
+
+    @PostMapping("/process")
+    public R processDataset(@RequestParam("file") File file){
+        return R.ok();
+    }
 
     /**
      * 列表

@@ -1,11 +1,12 @@
 <template>
   <div>
+    <div>
     <el-row>
-      <el-button type="primary">Import Dataset</el-button>
+      <single-upload></single-upload>
       <el-button type="primary">Export Dataset</el-button>
       <el-button type="danger" disabled>Delete</el-button>
     </el-row>
-
+    </div>
     <el-input
       v-model="input"
       placeholder="Search"
@@ -46,9 +47,10 @@
   </div>
 </template>
 <script>
+import SingleUpload from "@/components/upload/singleUpload";
 export default {
   name: "dataList",
-  components: {},
+  components: {SingleUpload},
   props: {},
   data() {
     return {
@@ -56,7 +58,7 @@ export default {
       multipleSelection: [],
       total: 0,
       pagesize: 10,
-      currentPage: 1
+      currentPage: 1,
     };
   },
 
