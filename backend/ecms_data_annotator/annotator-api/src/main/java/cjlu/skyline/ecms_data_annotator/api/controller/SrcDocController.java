@@ -27,9 +27,14 @@ public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;
 
+    @PostMapping("test")
+    public R test(){
+        return R.ok("ok");
+    }
+
     @PostMapping("/process")
     public R processDataset(@RequestParam("file") File file){
-        return R.ok();
+        return srcDocService.processDataset(file);
     }
 
     /**

@@ -1,6 +1,10 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
+import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.util.Date;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +28,13 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public R processDataset(File file) {
+        SrcDocEntity srcDoc=new SrcDocEntity();
+        srcDoc.setCreateTime(new Date());
+        return null;
     }
 
 }

@@ -1,9 +1,11 @@
 package cjlu.skyline.ecms_data_annotator.api.service;
 
+import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -16,5 +18,7 @@ import java.util.Map;
 public interface SrcDocService extends IService<SrcDocEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    R processDataset(File file);
 }
 
