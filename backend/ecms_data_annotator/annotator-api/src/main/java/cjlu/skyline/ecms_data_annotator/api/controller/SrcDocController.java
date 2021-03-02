@@ -33,8 +33,8 @@ public class SrcDocController {
     }
 
     @PostMapping("/process")
-    public R processDataset(@RequestParam("file") File file){
-        return srcDocService.processDataset(file);
+    public R processDataset(@RequestParam("filePath") String filePath){
+        return srcDocService.processDataset(filePath);
     }
 
     /**

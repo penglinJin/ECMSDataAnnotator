@@ -2,18 +2,22 @@ package cjlu.skyline.ecms_data_annotator.thirdparty.controller;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.MatchMode;
-import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -41,7 +45,30 @@ public class OssController {
     @Value("${stock.dir}")
     private String stockDir;
 
-    @RequestMapping("/oss/download")
+    public String uploadFile(MultipartFile multipartFile) throws IOException {
+        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 获取文件后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        // 最后上传生成的文件名
+        String finalFileName = System.currentTimeMillis() + "" + new SecureRandom().nextInt(0x0400) + suffixName;
+        // oss中的文件夹名
+        String objectName = sdf.format(new Date()) + "/" + finalFileName;
+        // 创建上传文件的元信息，可以通过文件元信息设置HTTP header(设置了才能通过返回的链接直接访问)。
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("image/jpg");
+        // 文件上传
+        ossClient.putObject(bucket, objectName, new ByteArrayInputStream(multipartFile.getBytes()),objectMetadata);
+        // 设置URL过期时间为1小时。
+        Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
+        String url = ossClient.generatePresignedUrl(bucket, objectName, expiration).toString();
+        ossClient.shutdown();
+        return url;
+    }
+
+    @PostMapping("/oss/download")
     public R download(String objectName){
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);

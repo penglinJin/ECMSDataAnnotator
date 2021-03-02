@@ -2,7 +2,7 @@
   <div>
     <div>
     <el-row>
-      <single-upload></single-upload>
+      <upload v-model="fileUrl"></upload>
       <el-button type="primary" @click.native="testMethod">Test</el-button>
       <el-button type="primary">Export Dataset</el-button>
       <el-button type="danger" disabled>Delete</el-button>
@@ -48,10 +48,10 @@
   </div>
 </template>
 <script>
-import SingleUpload from "@/components/upload/singleUpload";
+import upload from "@/components/upload/upload";
 export default {
   name: "dataList",
-  components: {SingleUpload},
+  components: {upload},
   props: {},
   data() {
     return {
@@ -60,6 +60,7 @@ export default {
       total: 0,
       pagesize: 10,
       currentPage: 1,
+      fileUrl: ""
     };
   },
 
