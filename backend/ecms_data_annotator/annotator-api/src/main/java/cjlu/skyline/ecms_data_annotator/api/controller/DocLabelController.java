@@ -26,7 +26,7 @@ import cjlu.skyline.ecms_data_annotator.api.service.DocLabelService;
  * @date 2021-01-11 15:35:16
  */
 @RestController
-@RequestMapping("api/doclabel")
+@RequestMapping("annotator/doclabel")
 public class DocLabelController {
     @Autowired
     private DocLabelService docLabelService;

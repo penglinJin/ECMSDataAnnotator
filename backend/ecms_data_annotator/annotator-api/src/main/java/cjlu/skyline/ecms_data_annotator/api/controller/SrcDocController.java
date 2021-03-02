@@ -22,7 +22,7 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
  * @date 2021-01-11 15:35:16
  */
 @RestController
-@RequestMapping("api/srcdoc")
+@RequestMapping("annotator/srcdoc")
 public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;

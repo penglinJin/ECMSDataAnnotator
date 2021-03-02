@@ -26,7 +26,7 @@ import cjlu.skyline.ecms_data_annotator.api.service.DocService;
  * @date 2021-01-11 15:35:16
  */
 @RestController
-@RequestMapping("api/doc")
+@RequestMapping("annotator/doc")
 public class DocController {
     @Autowired
     private DocService docService;

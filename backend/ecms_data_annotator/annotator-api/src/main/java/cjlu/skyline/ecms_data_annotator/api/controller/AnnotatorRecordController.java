@@ -25,7 +25,7 @@ import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
  * @date 2021-01-11 15:35:15
  */
 @RestController
-@RequestMapping("api/annotatorrecord")
+@RequestMapping("annotator/annotatorrecord")
 public class AnnotatorRecordController {
     @Autowired
     private AnnotatorRecordService annotatorRecordService;

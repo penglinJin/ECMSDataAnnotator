@@ -3,6 +3,7 @@
     <div>
     <el-row>
       <single-upload></single-upload>
+      <el-button type="primary" @click.native="testMethod">Test</el-button>
       <el-button type="primary">Export Dataset</el-button>
       <el-button type="danger" disabled>Delete</el-button>
     </el-row>
@@ -67,6 +68,18 @@ export default {
   watch: {},
 
   methods: {
+    testMethod(){
+      alert("test");
+        this.$http({
+        url: this.$http.adornUrl("/annotator/doc/list"),
+        method: "get",
+        data: this.$http.adornData({
+        }),
+      }).then(res=>{
+        console.log(res);
+      })
+    }
+    ,
     addUser() {
       this.$http({
         method: "GET",
