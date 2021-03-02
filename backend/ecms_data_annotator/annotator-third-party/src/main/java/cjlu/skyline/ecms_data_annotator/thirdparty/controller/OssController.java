@@ -2,7 +2,9 @@ package cjlu.skyline.ecms_data_annotator.thirdparty.controller;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 import lombok.extern.java.Log;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -30,7 +33,29 @@ public class OssController {
     private String bucket;
 
     @Value("${spring.cloud.alicloud.access-key}")
-    private String accessId;
+    private String accessKeyId;
+
+    @Value("${spring.cloud.alicloud.secret-key}")
+    private String accessKeySecret;
+
+    @Value("${stock.dir}")
+    private String stockDir;
+
+    @RequestMapping("/oss/download")
+    public R download(String objectName){
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        // 下载Object到本地文件，并保存到指定的本地路径中。如果指定的本地文件存在会覆盖，不存在则新建。
+        // 如果未指定本地路径，则下载后的文件默认保存到示例程序所属项目对应本地路径中。
+        String originName = objectName.substring(objectName.lastIndexOf("/") + 1);
+        String localPath=stockDir+originName;
+        ossClient.getObject(new GetObjectRequest(bucket, objectName), new File(localPath));
+
+        // 关闭OSSClient。
+        ossClient.shutdown();
+        return R.ok().put("localFilePath",localPath);
+    }
 
     @RequestMapping("/oss/policy")
     public R policy(){
@@ -59,7 +84,7 @@ public class OssController {
             String postSignature = ossClient.calculatePostSignature(postPolicy);
 
             respMap = new LinkedHashMap<String, String>();
-            respMap.put("accessid", accessId);
+            respMap.put("accessid", accessKeyId);
             respMap.put("policy", encodedPolicy);
             respMap.put("signature", postSignature);
             respMap.put("dir", dir);

@@ -104,7 +104,7 @@ export default {
     },
     handleUploadSuccess(res, file) {
       this.$http({
-        url: this.$http.adornUrl("/api/srcdoc/test"),
+        url: this.$http.adornUrl("/api/srcdoc/process"),
         method: "post",
         data: this.$http.adornData({
           file: file
