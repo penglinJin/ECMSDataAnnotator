@@ -1,8 +1,14 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
+import cjlu.skyline.ecms_data_annotator.api.dao.DocStateDao;
+import cjlu.skyline.ecms_data_annotator.api.entity.DocStateEntity;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.Query;
+import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,6 +23,12 @@ import cjlu.skyline.ecms_data_annotator.api.service.DocService;
 @Service("docService")
 public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements DocService {
 
+    @Autowired
+    DocDao docDao;
+
+    @Autowired
+    DocStateDao docStateDao;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<DocEntity> page = this.page(
@@ -25,6 +37,24 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public R deleteBatch(Long[] docIds) {
+        Arrays.stream(docIds).forEach(id->{
+            QueryWrapper<DocEntity> docQueryWrapper=new QueryWrapper<>();
+            docQueryWrapper.eq("doc_id",id);
+            docDao.delete(docQueryWrapper);
+            System.out.println("删除doc成功");
+
+            QueryWrapper<DocStateEntity> docStateQueryWrapper=new QueryWrapper<>();
+            docStateQueryWrapper.eq("doc_id",id);
+            docStateDao.delete(docStateQueryWrapper);
+            System.out.println("删除docState成功");
+
+
+        });
+        return R.ok();
     }
 
 }

@@ -1,46 +1,29 @@
 package cjlu.skyline.ecms_data_annotator.api;
 
+import cjlu.skyline.ecms_data_annotator.api.service.DocService;
+import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.UUID;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AnnotatorApiApplicationTests {
     public AnnotatorApiApplicationTests(){}
 
+    @Autowired
+    DocService docService;
+
     @Test
     public void testAn(){
-        URL url = null;
+        Long[] docIds=new Long[1];
+        docIds[0]=Long.parseLong("697245309510097996");
 
-        try {
-            url = new URL("https://ecms-annotator.oss-cn-hangzhou.aliyuncs.com/2021-03-03/933317aa-101a-428c-8bc6-dd2ad96c614d_huajianji-8-juan.json");   //想要读取的url地址
-
-            URLConnection conn = url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String urlString = "";
-            String current;
-            while ((current = in.readLine()) != null) {
-                urlString += current;
-            }
-
-//            //写到本地
-//            File fp = new File("D:/test.java");
-//            OutputStream os = new FileOutputStream(fp);
-//            os.write(urlString.getBytes());
-//            os.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        docService.deleteBatch(docIds);
     }
 }

@@ -6,11 +6,7 @@ import java.util.Map;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.DocEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.DocService;
@@ -34,7 +30,7 @@ public class DocController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryPage(params);
 
@@ -75,9 +71,19 @@ public class DocController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] docIds){
 		docService.removeByIds(Arrays.asList(docIds));
+
+        return R.ok();
+    }
+
+    /**
+     * BatchDetele
+     */
+    @PostMapping("/deleteBatch")
+    public R deleteBatch(@RequestBody Long[] docIds){
+        docService.deleteBatch(docIds);
 
         return R.ok();
     }

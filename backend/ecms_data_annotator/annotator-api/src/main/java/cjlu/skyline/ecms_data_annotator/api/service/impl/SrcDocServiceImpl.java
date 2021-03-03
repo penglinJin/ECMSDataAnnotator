@@ -1,7 +1,9 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
 import cjlu.skyline.ecms_data_annotator.api.dao.DocDao;
+import cjlu.skyline.ecms_data_annotator.api.dao.DocStateDao;
 import cjlu.skyline.ecms_data_annotator.api.entity.DocEntity;
+import cjlu.skyline.ecms_data_annotator.api.entity.DocStateEntity;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
@@ -15,9 +17,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -53,6 +54,9 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
     @Autowired
     DocDao docDao;
+
+    @Autowired
+    DocStateDao docStateDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -90,34 +94,50 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         srcDocDao.insert(srcDocEntity);
 
 
-        //if file is txt
         URL url = null;
 
-        try {
-            url = new URL(filePath);
+        if (fileType.equals(TXT)){
+            try {
+                url = new URL(filePath);
 
-            URLConnection conn = url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                URLConnection conn = url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-            String current;
-            while ((current = in.readLine()) != null) {
-                DocEntity docEntity=new DocEntity();
-                docEntity.setSrcDocId(srcDocId);
-                docEntity.setDocType(0);
-                docEntity.setCreateUserId(userId);
-                docEntity.setCreateTime(new Date());
-                docEntity.setDocContent(current);
-                docDao.insert(docEntity);
+                String current;
+                while ((current = in.readLine()) != null) {
+                    DocEntity docEntity=new DocEntity();
+                    Long docId=ApiUtils.getUniqId();
+                    docEntity.setDocId(docId);
+                    docEntity.setSrcDocId(srcDocId);
+                    docEntity.setDocType(0);
+                    docEntity.setCreateUserId(userId);
+                    docEntity.setCreateTime(new Date());
+                    docEntity.setDocContent(current);
+                    docDao.insert(docEntity);
+
+                    DocStateEntity docStateEntity=new DocStateEntity();
+                    docStateEntity.setDocId(docId);
+                    docStateEntity.setCreateTime(new Date());
+                    docStateEntity.setUpdateTime(new Date());
+                    docStateEntity.setDocStat(0);
+                    docStateDao.insert(docStateEntity);
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return R.ok("txt file process success");
+        }
+
+        if (fileType.equals(JSON)){
+
         }
 
 
 
         return R.ok();
     }
+
 
 }
