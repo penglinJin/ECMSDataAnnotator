@@ -1,5 +1,6 @@
 package cjlu.skyline.ecms_data_annotator.api.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -22,7 +23,7 @@ public class SrcDocEntity implements Serializable {
 	/**
 	 * 原文件id
 	 */
-	@TableId
+	@TableId(value = "src_doc_id",type = IdType.INPUT)
 	private Long srcDocId;
 	/**
 	 * 

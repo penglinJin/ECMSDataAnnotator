@@ -19,6 +19,6 @@ public interface SrcDocService extends IService<SrcDocEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    R processDataset(String filePath);
+    R processDataset(String filePath,Long userId);
 }
 
