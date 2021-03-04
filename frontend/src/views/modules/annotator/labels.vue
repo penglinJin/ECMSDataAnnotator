@@ -259,14 +259,14 @@ export default {
       this.getUserInfo();
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
           this.addLabel();
-          alert("success");
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+      this.addVisible=false;
+      this.getDataList();
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
