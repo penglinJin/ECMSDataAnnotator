@@ -38,7 +38,7 @@
           prop="docId"
           header-align="center"
           align="center"
-          width="80"
+          width="200"
           label="DocId"
         >
         </el-table-column>
@@ -46,7 +46,7 @@
           prop="docContent"
           header-align="center"
           align="center"
-          width="80"
+          width="900"
           label="Text"
         >
         </el-table-column>

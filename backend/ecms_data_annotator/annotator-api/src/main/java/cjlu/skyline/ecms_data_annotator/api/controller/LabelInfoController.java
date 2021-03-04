@@ -81,4 +81,14 @@ public class LabelInfoController {
         return R.ok();
     }
 
+    /**
+     * 删除
+     */
+    @RequestMapping("/deleteBatch")
+    public R deleteBatch(@RequestBody Long[] labelIds){
+        labelInfoService.removeByIds(Arrays.asList(labelIds));
+
+        return R.ok();
+    }
+
 }

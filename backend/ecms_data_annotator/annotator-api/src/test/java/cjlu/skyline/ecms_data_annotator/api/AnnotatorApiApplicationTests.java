@@ -1,6 +1,7 @@
 package cjlu.skyline.ecms_data_annotator.api;
 
 import cjlu.skyline.ecms_data_annotator.api.service.DocService;
+import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,13 +18,13 @@ public class AnnotatorApiApplicationTests {
     public AnnotatorApiApplicationTests(){}
 
     @Autowired
-    DocService docService;
+    LabelInfoService labelInfoService;
 
     @Test
     public void testAn(){
         Long[] docIds=new Long[1];
-        docIds[0]=Long.parseLong("697245309510097996");
+        docIds[0]=Long.parseLong("1");
 
-        docService.deleteBatch(docIds);
+        labelInfoService.deleteBatch(docIds);
     }
 }

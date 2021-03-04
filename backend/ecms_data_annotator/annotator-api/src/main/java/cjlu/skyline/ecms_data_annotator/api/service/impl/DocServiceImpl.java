@@ -45,12 +45,10 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
             QueryWrapper<DocEntity> docQueryWrapper=new QueryWrapper<>();
             docQueryWrapper.eq("doc_id",id);
             docDao.delete(docQueryWrapper);
-            System.out.println("删除doc成功");
 
             QueryWrapper<DocStateEntity> docStateQueryWrapper=new QueryWrapper<>();
             docStateQueryWrapper.eq("doc_id",id);
             docStateDao.delete(docStateQueryWrapper);
-            System.out.println("删除docState成功");
 
 
         });

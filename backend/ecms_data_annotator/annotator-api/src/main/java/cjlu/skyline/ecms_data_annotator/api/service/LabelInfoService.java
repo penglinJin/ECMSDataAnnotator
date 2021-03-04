@@ -1,5 +1,6 @@
 package cjlu.skyline.ecms_data_annotator.api.service;
 
+import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.api.entity.LabelInfoEntity;
@@ -16,5 +17,6 @@ import java.util.Map;
 public interface LabelInfoService extends IService<LabelInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+    R deleteBatch(Long[] labelIds);
 }
 
