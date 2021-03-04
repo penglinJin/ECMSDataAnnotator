@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -24,6 +26,7 @@ public class SrcDocEntity implements Serializable {
 	 * 原文件id
 	 */
 	@TableId(value = "src_doc_id",type = IdType.INPUT)
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private Long srcDocId;
 	/**
 	 * 
