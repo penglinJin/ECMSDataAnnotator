@@ -33,8 +33,11 @@ public class SrcDocController {
     }
 
     @PostMapping("annotate")
-    public R annotate(){
-        return R.ok();
+    public R annotate(@RequestParam("labelId") Long labelId,@RequestParam("userId") Long userId,@RequestParam("docId") Long docId){
+        if (labelId==null||userId==null||docId==null){
+            return R.error("null error");
+        }
+        return srcDocService.annotate(labelId,userId,docId);
     }
 
     @PostMapping("/process")

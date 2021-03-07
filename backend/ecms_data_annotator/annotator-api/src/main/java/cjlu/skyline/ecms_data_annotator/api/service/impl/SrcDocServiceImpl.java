@@ -1,10 +1,9 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
-import cjlu.skyline.ecms_data_annotator.api.dao.DocDao;
-import cjlu.skyline.ecms_data_annotator.api.dao.DocStateDao;
-import cjlu.skyline.ecms_data_annotator.api.entity.DocEntity;
-import cjlu.skyline.ecms_data_annotator.api.entity.DocStateEntity;
+import cjlu.skyline.ecms_data_annotator.api.dao.*;
+import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
+import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.Query;
 
-import cjlu.skyline.ecms_data_annotator.api.dao.SrcDocDao;
-import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.SrcDocService;
 import org.springframework.util.StringUtils;
 
@@ -57,7 +54,13 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     DocDao docDao;
 
     @Autowired
-    DocStateDao docStateDao;
+    AnnotatorRecordDao annotatorRecordDao;
+
+    @Autowired
+    DocLabelDao docLabelDao;
+
+    @Autowired
+    DocStateService docStateService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -121,7 +124,7 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
                     docStateEntity.setCreateTime(new Date());
                     docStateEntity.setUpdateTime(new Date());
                     docStateEntity.setDocStat(0);
-                    docStateDao.insert(docStateEntity);
+                    docStateService.save(docStateEntity);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -136,6 +139,33 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         }
 
 
+
+        return R.ok();
+    }
+
+    @Override
+    public R annotate(Long labelId, Long userId, Long docId) {
+        //create annotate record
+        AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
+        annotationRecord.setAnnotatorTypeCode(0);
+        annotationRecord.setLabelId(labelId);
+        annotationRecord.setUserId(userId);
+        annotationRecord.setDocId(docId);
+        annotatorRecordDao.insert(annotationRecord);
+
+        //create doc label
+        DocLabelEntity docLabelEntity=new DocLabelEntity();
+        docLabelEntity.setDocId(docId);
+        docLabelEntity.setLabelId(labelId);
+        docLabelDao.insert(docLabelEntity);
+
+        //update doc state
+        QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("doc_id",docId);
+        DocStateEntity docState=docStateService.getOne(queryWrapper);
+        //set status to wait for approval
+        docState.setDocStat(1);
+        docStateService.save(docState);
 
         return R.ok();
     }

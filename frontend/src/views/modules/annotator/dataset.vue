@@ -13,33 +13,20 @@
         label-width="100px"
         class="demo-ruleForm"
       >
+
+      <el-form-item label="id" prop="labelId">
+        <el-input v-model="labelForm.labelId" disabled></el-input>
+      </el-form-item>
         <el-form-item label="label" prop="labelContent">
-          <!-- <el-dropdown @command="handleCommand">
-                    <el-input v-model="labelForm.labelContent"></el-input>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item
-                        v-for="item in labelList"
-                        :key="item.labelId"
-                        :command="{
-                          id: item.labelId,
-                          name: item.labelContent,
-                          color: item.textColor
-                        }"
-                      >
-                      </el-dropdown-item>
-                      <el-dropdown-item v-for="(item,index) in labelList" :command="index" v-bind:key="item.labelId">
-
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown> -->
-
           <el-select
             v-model="labelForm.labelContent"
             placeholder="Please Select"
+            @change="changeSelectVal"
           >
             <el-option
               v-for="item in labelList"
               :key="item.labelId"
+              :label="item.labelContent"
               :value="item.labelContent"
             >
             </el-option>
@@ -152,8 +139,7 @@ export default {
     return {
       labelForm: {
         labelId: 0,
-        labelContent: "",
-        docId: 0
+        labelContent: ""
       },
       rules: {},
       tempData: {},
@@ -191,28 +177,29 @@ export default {
       if (val != null) {
         this.processDataSet(val);
       }
-    },
-    labelForm: function(val, oldVal) {
-      if (val != null) {
-        console.log("new val", val);
-      }
     }
   },
 
   methods: {
     submitForm(formName) {
       console.log("111111111", formName);
-      this.getUserInfo();
+      console.log("dataForm",this.labelForm);
       this.annotationVisible = false;
           this.$http({
-        url: this.$http.adornUrl("/annotator/labelinfo/list"),
-        method: "get",
+        url: this.$http.adornUrl("/annotator/srcdoc/annotate"),
+        method: "post",
         params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          content: ""
+          labelId: this.labelForm.labelId,
+          userId: this.userId,
+          docId: this.tempData.docId
         })
-      })
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          alert("ok");
+          console.log(data);
+        }
+        this.annotationVisible = false;
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -220,12 +207,16 @@ export default {
     handleClose() {
       console.log("about to close");
     },
-    // async annotate(val) {
-    //   await this.getLabelList(val);
-    //   console.log("---------labelList---------------", this.labelList);
-    //   console.log("--------text----------", val);
-    //   this.annotationVisible = true;
-    // },
+    changeSelectVal(val){
+      console.log("-----changeval---------",val);
+      let obj={};
+      obj=this.labelList.find((item)=>{
+        return item.labelContent===val;
+      });
+      console.log("--111---111-----",obj);
+      this.labelForm.labelId=obj.labelId;
+
+    },
     annotate(val) {
       this.$http({
         url: this.$http.adornUrl("/annotator/labelinfo/list"),
@@ -246,26 +237,6 @@ export default {
         this.annotationVisible = true;
       });
     },
-    // getLabelList(val) {
-    //   return new Promise((resolve, reject) => {
-    //     this.$http({
-    //       url: this.$http.adornUrl("/annotator/labelinfo/list"),
-    //       method: "get",
-    //       params: this.$http.adornParams({
-    //         page: this.pageIndex,
-    //         limit: this.pageSize,
-    //         content: ""
-    //       })
-    //     }).then(({ data }) => {
-    //       console.log("data0-------", data);
-    //       if (data && data.code === 0) {
-    //         this.labelList = data.page.list;
-    //         resolve(data.page.list);
-    //       }
-    //     });
-    //   });
-    // },
-    // 删除
     deleteHandle(id) {
       var ids = id
         ? [id]
@@ -353,7 +324,6 @@ export default {
       });
     },
     processDataSet(val) {
-      this.getUserInfo();
       console.log("processing userId", this.userId);
       this.$http({
         url: this.$http.adornUrl("/annotator/srcdoc/process"),
@@ -385,6 +355,7 @@ export default {
   activated() {
     console.log("sssssssssssssssssssssssssssssssss");
     this.getDataList();
+    this.getUserInfo();
   }
 };
 </script>

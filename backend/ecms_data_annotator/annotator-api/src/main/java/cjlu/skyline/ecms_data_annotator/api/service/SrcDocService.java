@@ -20,5 +20,7 @@ public interface SrcDocService extends IService<SrcDocEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     R processDataset(String filePath,Long userId);
+
+    R annotate(Long labelId, Long userId, Long docId);
 }
 
