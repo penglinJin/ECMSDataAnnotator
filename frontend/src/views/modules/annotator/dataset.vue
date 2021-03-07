@@ -1,8 +1,66 @@
 <template>
   <div>
+    <el-dialog
+      title="提示"
+      :visible.sync="annotationVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form
+        :model="labelForm"
+        :rules="rules"
+        ref="labelForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="label" prop="labelContent">
+          <!-- <el-dropdown @command="handleCommand">
+                    <el-input v-model="labelForm.labelContent"></el-input>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        v-for="item in labelList"
+                        :key="item.labelId"
+                        :command="{
+                          id: item.labelId,
+                          name: item.labelContent,
+                          color: item.textColor
+                        }"
+                      >
+                      </el-dropdown-item>
+                      <el-dropdown-item v-for="(item,index) in labelList" :command="index" v-bind:key="item.labelId">
+
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown> -->
+
+          <el-select
+            v-model="labelForm.labelContent"
+            placeholder="Please Select"
+          >
+            <el-option
+              v-for="item in labelList"
+              :key="item.labelId"
+              :value="item.labelContent"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="" prop="docId">
+          <el-input v-model="docContent" disabled></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('labelForm')"
+            >Confirm</el-button
+          >
+          <el-button @click="resetForm('labelForm')">Reset</el-button>
+          <el-button @click="annotationVisible = false">Cancel</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <div>
       <el-row>
         <upload v-model="fileUrl"></upload>
+
         <el-button type="primary" @click.native="testMethod">Test</el-button>
         <el-button type="primary">Export Dataset</el-button>
         <el-button
@@ -92,6 +150,16 @@ export default {
   props: {},
   data() {
     return {
+      labelForm: {
+        labelId: 0,
+        labelContent: "",
+        docId: 0
+      },
+      rules: {},
+      tempData: {},
+      docContent: "",
+      annotationVisible: false,
+      labelList: [],
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -123,10 +191,80 @@ export default {
       if (val != null) {
         this.processDataSet(val);
       }
+    },
+    labelForm: function(val, oldVal) {
+      if (val != null) {
+        console.log("new val", val);
+      }
     }
   },
 
   methods: {
+    submitForm(formName) {
+      console.log("111111111", formName);
+      this.getUserInfo();
+      this.annotationVisible = false;
+          this.$http({
+        url: this.$http.adornUrl("/annotator/labelinfo/list"),
+        method: "get",
+        params: this.$http.adornParams({
+          page: this.pageIndex,
+          limit: this.pageSize,
+          content: ""
+        })
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    handleClose() {
+      console.log("about to close");
+    },
+    // async annotate(val) {
+    //   await this.getLabelList(val);
+    //   console.log("---------labelList---------------", this.labelList);
+    //   console.log("--------text----------", val);
+    //   this.annotationVisible = true;
+    // },
+    annotate(val) {
+      this.$http({
+        url: this.$http.adornUrl("/annotator/labelinfo/list"),
+        method: "get",
+        params: this.$http.adornParams({
+          page: this.pageIndex,
+          limit: this.pageSize,
+          content: ""
+        })
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.labelList = data.page.list;
+        }
+        console.log("---------labelList---------------", this.labelList);
+        console.log("--------text----------", val);
+        this.docContent=val.docContent;
+        this.tempData=val;
+        this.annotationVisible = true;
+      });
+    },
+    // getLabelList(val) {
+    //   return new Promise((resolve, reject) => {
+    //     this.$http({
+    //       url: this.$http.adornUrl("/annotator/labelinfo/list"),
+    //       method: "get",
+    //       params: this.$http.adornParams({
+    //         page: this.pageIndex,
+    //         limit: this.pageSize,
+    //         content: ""
+    //       })
+    //     }).then(({ data }) => {
+    //       console.log("data0-------", data);
+    //       if (data && data.code === 0) {
+    //         this.labelList = data.page.list;
+    //         resolve(data.page.list);
+    //       }
+    //     });
+    //   });
+    // },
     // 删除
     deleteHandle(id) {
       var ids = id

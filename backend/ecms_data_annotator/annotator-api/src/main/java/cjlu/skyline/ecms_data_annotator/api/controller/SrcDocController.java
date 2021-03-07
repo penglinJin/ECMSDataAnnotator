@@ -32,6 +32,11 @@ public class SrcDocController {
         return R.ok("ok");
     }
 
+    @PostMapping("annotate")
+    public R annotate(){
+        return R.ok();
+    }
+
     @PostMapping("/process")
     public R processDataset(@RequestParam("filePath") String filePath, @RequestParam("userId") Long userId){
         if (StringUtils.isEmpty(filePath)){

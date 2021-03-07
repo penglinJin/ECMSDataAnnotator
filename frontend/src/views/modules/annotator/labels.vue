@@ -232,6 +232,9 @@ export default {
   },
 
   methods: {
+        handleClose(){
+      console.log("about to close");
+    },
     addLabel() {
       if (this.addForm != null) {
         this.$http({
