@@ -18,13 +18,10 @@ public class AnnotatorApiApplicationTests {
     public AnnotatorApiApplicationTests(){}
 
     @Autowired
-    LabelInfoService labelInfoService;
+    DocService docService;
 
     @Test
     public void testAn(){
-        Long[] docIds=new Long[1];
-        docIds[0]=Long.parseLong("1");
-
-        labelInfoService.deleteBatch(docIds);
+        //docService.queryPrePage();
     }
 }

@@ -19,5 +19,7 @@ public interface DocService extends IService<DocEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     R deleteBatch(Long[] docIds);
+
+    PageUtils queryPrePage(Map<String, Object> params);
 }
 

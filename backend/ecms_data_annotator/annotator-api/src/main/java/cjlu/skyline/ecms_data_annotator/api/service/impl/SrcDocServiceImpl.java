@@ -6,6 +6,7 @@ import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
 import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -165,7 +166,7 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         DocStateEntity docState=docStateService.getOne(queryWrapper);
         //set status to wait for approval
         docState.setDocStat(1);
-        docStateService.save(docState);
+        docStateService.update(docState,new UpdateWrapper<DocStateEntity>().eq("doc_id",docId));
 
         return R.ok();
     }

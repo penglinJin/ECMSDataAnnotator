@@ -27,6 +27,13 @@ public class DocController {
     @Autowired
     private DocService docService;
 
+    @GetMapping("/preList")
+    public R preList(@RequestParam Map<String, Object> params){
+        PageUtils page = docService.queryPrePage(params);
+
+        return R.ok().put("page", page);
+    }
+
     /**
      * 列表
      */

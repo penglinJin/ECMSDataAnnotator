@@ -1,5 +1,7 @@
 package cjlu.skyline.ecms_data_annotator.api.utils;
 
+import org.springframework.beans.BeanUtils;
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -24,4 +26,28 @@ public class ApiUtils {
             }
             return Long.valueOf(finalId);
     }
+
+
+    /**
+     * convert Type
+     * @author 金鹏霖
+     * @date 2021/3/8
+     * @param source
+    targetClass
+     * @return Target
+     */
+    public static final <Target>Target copyProperties(Object source,Class<Target> targetClass){
+        try {
+            if(source==null || targetClass==null){
+                return null;
+            }
+            Target doInstance = targetClass.newInstance();
+            BeanUtils.copyProperties(source, doInstance);
+            return doInstance;
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
