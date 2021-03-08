@@ -145,20 +145,24 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     }
 
     @Override
-    public R annotate(Long labelId, Long userId, Long docId) {
-        //create annotate record
-        AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
-        annotationRecord.setAnnotatorTypeCode(0);
-        annotationRecord.setLabelId(labelId);
-        annotationRecord.setUserId(userId);
-        annotationRecord.setDocId(docId);
-        annotatorRecordDao.insert(annotationRecord);
+    public R annotate(Long[] labelIds, Long userId, Long docId) {
+        for (int i=0;i<labelIds.length;i++){
+            Long labelId=labelIds[i];
+            //create annotate record
+            AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
+            annotationRecord.setAnnotatorTypeCode(0);
+            annotationRecord.setLabelId(labelId);
+            annotationRecord.setUserId(userId);
+            annotationRecord.setDocId(docId);
+            annotatorRecordDao.insert(annotationRecord);
 
-        //create doc label
-        DocLabelEntity docLabelEntity=new DocLabelEntity();
-        docLabelEntity.setDocId(docId);
-        docLabelEntity.setLabelId(labelId);
-        docLabelDao.insert(docLabelEntity);
+            //create doc label
+            DocLabelEntity docLabelEntity=new DocLabelEntity();
+            docLabelEntity.setDocId(docId);
+            docLabelEntity.setLabelId(labelId);
+            docLabelDao.insert(docLabelEntity);
+
+        }
 
         //update doc state
         QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();
@@ -167,7 +171,6 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         //set status to wait for approval
         docState.setDocStat(1);
         docStateService.update(docState,new UpdateWrapper<DocStateEntity>().eq("doc_id",docId));
-
         return R.ok();
     }
 

@@ -1,13 +1,16 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
 import cjlu.skyline.ecms_data_annotator.api.dao.DocStateDao;
+import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
 import cjlu.skyline.ecms_data_annotator.api.entity.DocStateEntity;
+import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.vo.DocVo;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.Query;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,9 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
 
     @Autowired
     DocStateService docStateService;
+
+    @Autowired
+    AnnotatorRecordService annotatorRecordService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -91,6 +97,45 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
 
 
         return new PageUtils(convert);
+    }
+
+    @Override
+    public PageUtils queryApprovalPage(Map<String, Object> params) {
+        List<DocStateEntity> docStatList = docStateService.list(new QueryWrapper<DocStateEntity>().eq("doc_stat", 1));
+
+        List<Long> docIdList = new ArrayList<>();
+        docStatList.forEach(item->{
+            docIdList.add(item.getDocId());
+        });
+
+        IPage<DocEntity> page = this.page(
+                new Query<DocEntity>().getPage(params),
+                new QueryWrapper<DocEntity>().in("doc_id",docIdList)
+        );
+
+        IPage<DocVo> convert = page.convert(DocEntity -> ApiUtils.copyProperties(DocEntity, DocVo.class));
+
+        List<DocVo> docVos=new ArrayList<>();
+        convert.getRecords().forEach(i->{
+            i.setDocState("unapproved");
+            docVos.add(i);
+        });
+
+        convert.setRecords(docVos);
+        return new PageUtils(convert);
+    }
+
+    @Override
+    public R approve(Long docId,Long userId) {
+        AnnotatorRecordEntity annotatorRecordEntity=new AnnotatorRecordEntity();
+        annotatorRecordEntity.setDocId(docId);
+        annotatorRecordEntity.setUserId(userId);
+        annotatorRecordEntity.setAnnotatorTypeCode(2);
+        annotatorRecordService.save(annotatorRecordEntity);
+
+        UpdateWrapper<DocStateEntity> updateWrapper=new UpdateWrapper<>();
+
+        return null;
     }
 
 }

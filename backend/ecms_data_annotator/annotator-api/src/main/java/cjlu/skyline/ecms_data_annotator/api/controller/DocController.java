@@ -27,6 +27,17 @@ public class DocController {
     @Autowired
     private DocService docService;
 
+    @PostMapping
+    public R approve(@RequestParam("docId") Long docId,@RequestParam("userId") Long userId){
+        return docService.approve(docId,userId);
+    }
+
+    @GetMapping("/approvalList")
+    public R approvalList(@RequestParam Map<String, Object> params){
+        PageUtils page = docService.queryApprovalPage(params);
+        return R.ok().put("page", page);
+    }
+
     @GetMapping("/preList")
     public R preList(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryPrePage(params);

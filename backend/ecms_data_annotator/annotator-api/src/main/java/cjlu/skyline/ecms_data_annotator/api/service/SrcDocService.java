@@ -21,6 +21,6 @@ public interface SrcDocService extends IService<SrcDocEntity> {
 
     R processDataset(String filePath,Long userId);
 
-    R annotate(Long labelId, Long userId, Long docId);
+    R annotate(Long[] labelIds, Long userId, Long docId);
 }
 

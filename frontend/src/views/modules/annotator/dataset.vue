@@ -13,14 +13,20 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="id" prop="labelId">
-          <el-input v-model="labelForm.labelId" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="label" prop="labelContent">
+        <!-- <el-form-item label="id" prop="labelIds">
           <el-select
-            v-model="labelForm.labelContent"
+            v-model="labelForm.labels"
+            placeholder=""
+            multiple
+            disabled
+          ></el-select>
+        </el-form-item> -->
+        <el-form-item label="label" prop="labelContents">
+          <el-select
+            v-model="labelForm.labelContents"
             placeholder="Please Select"
             @change="changeSelectVal"
+            multiple
           >
             <el-option
               v-for="item in labelList"
@@ -145,9 +151,10 @@ export default {
   data() {
     return {
       labelForm: {
-        labelId: 0,
-        labelContent: ""
+        labelContents: []
       },
+      labelIds: [],
+      labelContents: [],
       rules: {},
       tempData: {},
       docContent: "",
@@ -189,17 +196,19 @@ export default {
 
   methods: {
     submitForm(formName) {
-      console.log("111111111", formName);
       console.log("dataForm", this.labelForm);
+      console.log("1111labelContents11111", this.labelContents);
+      console.log("1111labelIds11111", this.labelForm.labelIds);
+      var labelIds=this.labelForm.labelIds;
       this.annotationVisible = false;
       this.$http({
         url: this.$http.adornUrl("/annotator/srcdoc/annotate"),
         method: "post",
         params: this.$http.adornParams({
-          labelId: this.labelForm.labelId,
           userId: this.userId,
           docId: this.tempData.docId
-        })
+        }),
+        data: this.$http.adornData(labelIds,false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$message({
@@ -217,17 +226,33 @@ export default {
       this.$refs[formName].resetFields();
     },
     handleClose() {
+      this.annotationVisible = false;
       console.log("about to close");
     },
     changeSelectVal(val) {
-      console.log("-----changeval---------", val);
-      let obj = {};
-      obj = this.labelList.find(item => {
-        return item.labelContent === val;
-      });
-      console.log("--111---111-----", obj);
-      this.labelForm.labelId = obj.labelId;
+      if (val != null) {
+        console.log("about to change");
+        var arr = new Array();
+        for (var i = 0; i < val.length; i++) {
+          let savedLabel = val[i];
+          console.log("savedLabel", savedLabel);
+          let obj = {};
+          for (var j = 0; j < this.labelList.length; j++) {
+            if (savedLabel == this.labelList[j].labelContent) {
+              obj = this.labelList[j];
+            }
+          }
+          if (obj != null) {
+            arr.push(obj.labelId);
+          }
+        }
+        this.labelForm.labelIds = arr;
+        this.labelContents = val;
+        console.log("---labelContents---", this.labelForm.labelContents);
+        console.log("---labelIds---", this.labelForm.labelIds);
+      }
     },
+    asyncLabel() {},
     annotate(val) {
       this.$http({
         url: this.$http.adornUrl("/annotator/labelinfo/list"),
