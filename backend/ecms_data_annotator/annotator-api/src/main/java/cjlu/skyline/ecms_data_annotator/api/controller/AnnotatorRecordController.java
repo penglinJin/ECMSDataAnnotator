@@ -6,11 +6,7 @@ import java.util.Map;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
@@ -29,6 +25,12 @@ import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 public class AnnotatorRecordController {
     @Autowired
     private AnnotatorRecordService annotatorRecordService;
+
+    @GetMapping("/approvalList")
+    public R approvalList(@RequestParam Map<String, Object> params){
+        PageUtils page = annotatorRecordService.queryApprovalPage(params);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表

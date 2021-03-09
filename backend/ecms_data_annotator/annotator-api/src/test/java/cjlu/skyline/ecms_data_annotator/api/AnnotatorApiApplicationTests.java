@@ -1,11 +1,11 @@
 package cjlu.skyline.ecms_data_annotator.api;
 
-import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
-import cjlu.skyline.ecms_data_annotator.api.entity.DocEntity;
+import cjlu.skyline.ecms_data_annotator.api.entity.SysUserEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 import cjlu.skyline.ecms_data_annotator.api.service.DocService;
 import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
-import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
+import cjlu.skyline.ecms_data_annotator.api.service.SysUserService;
+import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,26 +13,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-import java.util.UUID;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AnnotatorApiApplicationTests {
     public AnnotatorApiApplicationTests(){}
 
-    @Autowired
-    DocService docService;
-
-    @Autowired
-    AnnotatorRecordService annotatorRecordService;
-
-    @Autowired
-    LabelInfoService labelInfoService;
+//    @Autowired
+//    DocService docService;
+//
+//    @Autowired
+//    AnnotatorRecordService annotatorRecordService;
+//
+//    @Autowired
+//    LabelInfoService labelInfoService;
+//
+//    @Autowired
+//    SysUserService sysUserService;
 
     @Test
     public void testAn(){
+
+//        Long id=Long.valueOf("1");
+//        SysUserEntity user = sysUserService.getOne(new QueryWrapper<SysUserEntity>().eq("user_id", id));
+//        System.out.println(user);
         //docService.queryPrePage();
 //        QueryWrapper<AnnotatorRecordEntity> queryWrapper=new QueryWrapper();
 //        Long id=Long.valueOf("160314514860059786");

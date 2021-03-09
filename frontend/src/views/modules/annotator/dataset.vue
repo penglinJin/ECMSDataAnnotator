@@ -357,6 +357,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.userId = data.user.userId;
+          console.log("user",data.user);
           console.log("userId=", this.userId);
         }
       });

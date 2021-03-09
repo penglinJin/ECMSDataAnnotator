@@ -24,8 +24,8 @@ public interface DocService extends IService<DocEntity> {
 
     PageUtils queryApprovalPage(Map<String, Object> params);
 
-    R approve(Long docId,Long userId);
+    R approve(Long annotateRecordId,Long userId);
 
-    R reject(Long docId, Long userId);
+    R reject(Long annotateRecordId, Long userId);
 }
 

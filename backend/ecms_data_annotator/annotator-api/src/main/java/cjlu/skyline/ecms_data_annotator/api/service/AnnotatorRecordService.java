@@ -16,5 +16,7 @@ import java.util.Map;
 public interface AnnotatorRecordService extends IService<AnnotatorRecordEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryApprovalPage(Map<String, Object> params);
 }
 

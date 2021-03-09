@@ -3,6 +3,7 @@ package cjlu.skyline.ecms_data_annotator.api.service.impl;
 import cjlu.skyline.ecms_data_annotator.api.dao.*;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
+import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
 import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
@@ -56,7 +57,7 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     DocDao docDao;
 
     @Autowired
-    AnnotatorRecordDao annotatorRecordDao;
+    AnnotatorRecordService annotatorRecordService;
 
     @Autowired
     DocLabelDao docLabelDao;
@@ -161,6 +162,9 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         annotationRecord.setDocId(docId);
         annotationRecord.setOldLabels(oldLabels);
         annotationRecord.setNewLabels(newLabels);
+        annotationRecord.setStatus(0);
+        annotationRecord.setCreateTime(new Date());
+        annotatorRecordService.save(annotationRecord);
 
         //update doc state
         QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();

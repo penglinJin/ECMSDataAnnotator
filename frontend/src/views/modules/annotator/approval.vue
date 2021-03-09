@@ -37,6 +37,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="recordId"
+          header-align="center"
+          align="center"
+          width="50"
+          label="recordId"
+        ></el-table-column>
+        <el-table-column
           prop="docId"
           header-align="center"
           align="center"
@@ -48,16 +55,24 @@
           prop="docContent"
           header-align="center"
           align="center"
-          width="800"
+          width="500"
           label="Text"
         >
         </el-table-column>
         <el-table-column
-          prop="docState"
+          prop="oldLabelNames"
           header-align="center"
           align="center"
-          width="100"
-          label="docState"
+          width="200"
+          label="oldLabel"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="updatedLabelNames"
+          header-align="center"
+          align="center"
+          width="200"
+          label="newLabel"
         >
         </el-table-column>
         <el-table-column
@@ -146,14 +161,53 @@ export default {
         url: this.$http.adornUrl("/annotator/doc/approve"),
         method: "post",
         params: this.$http.adornParams({
-          docId: val.docId,
+          annotateRecordId: val.recordId,
           userId: this.userId
         })
-      }).then((data)=>{
-
+      }).then(data => {
+        console.log("1111233",data);
+        if (data.status == 200) {
+          this.$message({
+            message: "annotate has been approved",
+            type: "success",
+            duration: 1000
+          });
+        } else {
+          this.$message({
+            message: "approve fail",
+            type: "warning",
+            duration: 1000
+          });
+        }
+        this.getDataList();
       });
     },
-    reject(val) {},
+    reject(val) {
+      this.$http({
+        url: this.$http.adornUrl("/annotator/doc/reject"),
+        method: "post",
+        params: this.$http.adornParams({
+          annotateRecordId: val.recordId,
+          userId: this.userId
+        })
+      }).then(data => {
+        console.log("1111233",data);
+        if ( data.status == 200) {
+          this.$message({
+            message: "annotate has been rejected",
+            type: "success",
+            duration: 1000
+          });
+        } else {
+          this.$message({
+            message: "reject fail",
+            type: "warning",
+            duration: 1000
+          });
+        }
+        this.getDataList();
+      });
+    },
     batchApprove() {},
     changeSelectVal(val) {
       console.log("-----changeval---------", val);
@@ -205,7 +259,7 @@ export default {
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/annotator/doc/approvalList"),
+        url: this.$http.adornUrl("/annotator/annotatorrecord/approvalList"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -216,6 +270,7 @@ export default {
         if (data && data.code === 0) {
           this.dataList = data.page.list;
           this.totalPage = data.page.totalCount;
+          console.log("00datakist00", this.dataList);
         } else {
           this.dataList = [];
           this.totalPage = 0;
@@ -249,21 +304,6 @@ export default {
           console.log("userId=", this.userId);
         }
       });
-    },
-    processDataSet(val) {
-      console.log("processing userId", this.userId);
-      this.$http({
-        url: this.$http.adornUrl("/annotator/srcdoc/process"),
-        method: "post",
-        params: this.$http.adornParams({
-          filePath: val,
-          userId: this.userId
-        })
-      }).then(res => {
-        this.getDataList();
-        console.log("---", res);
-      });
-      console.log("new file path:", val);
     },
     current_change: function(currentPage) {
       this.currentPage = currentPage;

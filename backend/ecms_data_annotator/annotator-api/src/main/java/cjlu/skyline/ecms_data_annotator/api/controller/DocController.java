@@ -29,15 +29,27 @@ public class DocController {
 
 
     @PostMapping("reject")
-    public R reject(@RequestParam("docId") Long docId,@RequestParam("userId") Long userId){
-        return docService.reject(docId,userId);
+    public R reject(@RequestParam("annotateRecordId") Long annotateRecordId,@RequestParam("userId") Long userId){
+        return docService.reject(annotateRecordId,userId);
+    }
+
+    @PostMapping("rejectBatch")
+    public R rejectBatch(@RequestBody Long[] annotateRecordIds,@RequestParam("userId") Long userId){
+        if (annotateRecordIds!=null){
+            Arrays.asList(annotateRecordIds).forEach(annotateRecordId->{
+                docService.reject(annotateRecordId,userId);
+            });
+            return R.ok();
+        }else {
+            return R.error("empty selection");
+        }
     }
 
     @PostMapping("/approveBatch")
-    public R approveBatch(@RequestParam("userId") Long userId,@RequestBody Long[] docIds){
-        if (docIds!=null){
-            Arrays.asList(docIds).forEach(docId->{
-                docService.approve(docId,userId);
+    public R approveBatch(@RequestBody Long[] annotateRecordIds,@RequestParam("userId") Long userId){
+        if (annotateRecordIds!=null){
+            Arrays.asList(annotateRecordIds).forEach(annotateRecordId->{
+                docService.approve(annotateRecordId,userId);
             });
             return R.ok();
         }else {
@@ -46,8 +58,8 @@ public class DocController {
     }
 
     @PostMapping("/approve")
-    public R approve(@RequestParam("docId") Long docId,@RequestParam("userId") Long userId){
-        return docService.approve(docId,userId);
+    public R approve(@RequestParam("annotateRecordId") Long annotateRecordId,@RequestParam("userId") Long userId){
+        return docService.approve(annotateRecordId,userId);
     }
 
     @GetMapping("/approvalList")

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -63,6 +65,15 @@ public class AnnotatorRecordEntity implements Serializable {
 	 */
 	private String newLabels;
 
+	/**
+	 *
+	 */
+	private Long targetRecord;
 
+	/**
+	 * 0未处理1已处理
+	 */
+	private Integer status;
 
+	private Date createTime;
 }

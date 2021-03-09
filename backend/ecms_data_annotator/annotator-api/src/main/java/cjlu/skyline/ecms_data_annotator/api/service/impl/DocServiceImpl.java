@@ -113,6 +113,7 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
 
     @Override
     public PageUtils queryApprovalPage(Map<String, Object> params) {
+
         List<DocStateEntity> docStatList = docStateService.list(new QueryWrapper<DocStateEntity>().eq("doc_stat", 1));
 
         List<Long> docIdList = new ArrayList<>();
@@ -138,13 +139,24 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
     }
 
     @Override
-    public R approve(Long docId,Long userId) {
+    public R approve(Long annotateRecordId,Long userId) {
+
+        AnnotatorRecordEntity record = annotatorRecordService
+                .getOne(new QueryWrapper<AnnotatorRecordEntity>()
+                        .eq("record_id", annotateRecordId));
+
+        //approve record
         AnnotatorRecordEntity annotatorRecordEntity=new AnnotatorRecordEntity();
+        Long docId=record.getDocId();
         annotatorRecordEntity.setDocId(docId);
         annotatorRecordEntity.setUserId(userId);
         annotatorRecordEntity.setAnnotatorTypeCode(2);
+        annotatorRecordEntity.setTargetRecord(annotateRecordId);
+        annotatorRecordEntity.setStatus(1);
         annotatorRecordService.save(annotatorRecordEntity);
 
+        record.setStatus(1);
+        annotatorRecordService.update(record,new UpdateWrapper<AnnotatorRecordEntity>().eq("record_id",annotateRecordId));
 
         DocStateEntity docStateEntity=docStateService.getOne(new QueryWrapper<DocStateEntity>().eq("doc_id",docId));
         docStateEntity.setDocStat(2);
@@ -156,12 +168,23 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
     }
 
     @Override
-    public R reject(Long docId, Long userId) {
+    public R reject(Long annotateRecordId, Long userId) {
+        AnnotatorRecordEntity record = annotatorRecordService
+                .getOne(new QueryWrapper<AnnotatorRecordEntity>()
+                        .eq("record_id", annotateRecordId));
+
         AnnotatorRecordEntity annotatorRecordEntity=new AnnotatorRecordEntity();
+
+        Long docId=record.getDocId();
         annotatorRecordEntity.setDocId(docId);
         annotatorRecordEntity.setUserId(userId);
         annotatorRecordEntity.setAnnotatorTypeCode(1);
+        annotatorRecordEntity.setStatus(1);
+        annotatorRecordEntity.setTargetRecord(annotateRecordId);
         annotatorRecordService.save(annotatorRecordEntity);
+
+        record.setStatus(1);
+        annotatorRecordService.update(record,new UpdateWrapper<AnnotatorRecordEntity>().eq("record_id",annotateRecordId));
 
 
         DocStateEntity docStateEntity=docStateService.getOne(new QueryWrapper<DocStateEntity>().eq("doc_id",docId));
