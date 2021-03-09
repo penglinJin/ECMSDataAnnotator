@@ -13,6 +13,8 @@
         <result property="startOffset" column="start_offset"/>
         <result property="endOffset" column="end_offset"/>
         <result property="prob" column="prob"/>
+        <result property="oldLabels" column="old_labels"/>
+        <result property="newLabels" column="new_labels"/>
     </resultMap>
 
 

@@ -153,6 +153,8 @@ export default {
       labelForm: {
         labelContents: []
       },
+      newLabels: [],
+      oldLabels: [],
       labelIds: [],
       labelContents: [],
       rules: {},

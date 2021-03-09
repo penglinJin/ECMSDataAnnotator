@@ -27,7 +27,25 @@ public class DocController {
     @Autowired
     private DocService docService;
 
-    @PostMapping
+
+    @PostMapping("reject")
+    public R reject(@RequestParam("docId") Long docId,@RequestParam("userId") Long userId){
+        return docService.reject(docId,userId);
+    }
+
+    @PostMapping("/approveBatch")
+    public R approveBatch(@RequestParam("userId") Long userId,@RequestBody Long[] docIds){
+        if (docIds!=null){
+            Arrays.asList(docIds).forEach(docId->{
+                docService.approve(docId,userId);
+            });
+            return R.ok();
+        }else {
+            return R.error("empty selection");
+        }
+    }
+
+    @PostMapping("/approve")
     public R approve(@RequestParam("docId") Long docId,@RequestParam("userId") Long userId){
         return docService.approve(docId,userId);
     }

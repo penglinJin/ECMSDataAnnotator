@@ -72,7 +72,10 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
     @Override
     public PageUtils queryPrePage(Map<String, Object> params) {
 
-        List<DocStateEntity> docStatList = docStateService.list(new QueryWrapper<DocStateEntity>().eq("doc_stat", 0));
+        List<Long> statList=new ArrayList<>();
+        statList.add(Long.parseLong("0"));
+        statList.add(Long.parseLong("2"));
+        List<DocStateEntity> docStatList = docStateService.list(new QueryWrapper<DocStateEntity>().in("doc_stat",statList));
 
         List<Long> docIdList = new ArrayList<>();
         docStatList.forEach(item->{
@@ -88,7 +91,16 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
 
         List<DocVo> docVos=new ArrayList<>();
         convert.getRecords().forEach(i->{
-            i.setDocState("unannotated");
+            Long docId = i.getDocId();
+            QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("doc_id",docId);
+            int docStatus=docStateService.getOne(queryWrapper).getDocStat();
+            if (docId==0){
+                i.setDocState("unannotated");
+
+            }else if (docId==2){
+                i.setDocState("approved");
+            }
             docVos.add(i);
         });
 
@@ -133,9 +145,33 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
         annotatorRecordEntity.setAnnotatorTypeCode(2);
         annotatorRecordService.save(annotatorRecordEntity);
 
-        UpdateWrapper<DocStateEntity> updateWrapper=new UpdateWrapper<>();
 
-        return null;
+        DocStateEntity docStateEntity=docStateService.getOne(new QueryWrapper<DocStateEntity>().eq("doc_id",docId));
+        docStateEntity.setDocStat(2);
+        UpdateWrapper<DocStateEntity> updateWrapper=new UpdateWrapper<>();
+        updateWrapper.eq("doc_id",docId);
+        docStateService.update(docStateEntity,updateWrapper);
+
+        return R.ok();
+    }
+
+    @Override
+    public R reject(Long docId, Long userId) {
+        AnnotatorRecordEntity annotatorRecordEntity=new AnnotatorRecordEntity();
+        annotatorRecordEntity.setDocId(docId);
+        annotatorRecordEntity.setUserId(userId);
+        annotatorRecordEntity.setAnnotatorTypeCode(1);
+        annotatorRecordService.save(annotatorRecordEntity);
+
+
+        DocStateEntity docStateEntity=docStateService.getOne(new QueryWrapper<DocStateEntity>().eq("doc_id",docId));
+        docStateEntity.setDocStat(0);
+        UpdateWrapper<DocStateEntity> updateWrapper=new UpdateWrapper<>();
+        updateWrapper.eq("doc_id",docId);
+        docStateService.update(docStateEntity,updateWrapper);
+
+
+        return R.ok();
     }
 
 }

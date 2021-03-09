@@ -53,4 +53,16 @@ public class AnnotatorRecordEntity implements Serializable {
 	 */
 	private BigDecimal prob;
 
+	/**
+	 *
+	 */
+	private String oldLabels;
+
+	/**
+	 *
+	 */
+	private String newLabels;
+
+
+
 }

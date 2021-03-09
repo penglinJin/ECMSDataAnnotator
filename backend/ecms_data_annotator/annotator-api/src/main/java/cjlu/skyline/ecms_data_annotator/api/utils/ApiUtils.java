@@ -2,8 +2,7 @@ package cjlu.skyline.ecms_data_annotator.api.utils;
 
 import org.springframework.beans.BeanUtils;
 
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author 金鹏霖
@@ -12,6 +11,16 @@ import java.util.UUID;
  * @date 2021/3/3
  */
 public class ApiUtils {
+
+    public static List<Long> transToLabelInfo(String s){
+        String[] split = s.split(",");
+        List<Long> labelIdList = new ArrayList<>();
+        Arrays.asList(split).forEach(i->{
+            labelIdList.add(Long.valueOf(i));
+        });
+        return labelIdList;
+    }
+
     public static Long getUniqId() {
         Random random=new Random();
         String nanoRandom = System.nanoTime() + "" + random.nextInt(99999);
