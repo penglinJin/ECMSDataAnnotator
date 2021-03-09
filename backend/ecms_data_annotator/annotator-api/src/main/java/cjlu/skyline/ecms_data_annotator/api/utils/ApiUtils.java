@@ -12,6 +12,18 @@ import java.util.*;
  */
 public class ApiUtils {
 
+    public static String transToString(List<Long> labelList){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < labelList.size(); i++) {
+            String s=labelList.get(i).toString();
+            stringBuilder.append(s);
+            if (i<labelList.size()-1){
+                stringBuilder.append(",");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public static List<Long> transToLabelInfo(String s){
         String[] split = s.split(",");
         List<Long> labelIdList = new ArrayList<>();

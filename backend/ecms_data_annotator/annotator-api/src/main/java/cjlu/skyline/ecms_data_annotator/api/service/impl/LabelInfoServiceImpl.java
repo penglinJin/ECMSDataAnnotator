@@ -3,11 +3,14 @@ package cjlu.skyline.ecms_data_annotator.api.service.impl;
 import cjlu.skyline.ecms_data_annotator.api.dao.AnnotatorRecordDao;
 import cjlu.skyline.ecms_data_annotator.api.dao.DocLabelDao;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
+import cjlu.skyline.ecms_data_annotator.api.service.DocLabelService;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,6 +33,9 @@ public class LabelInfoServiceImpl extends ServiceImpl<LabelInfoDao, LabelInfoEnt
 
     @Autowired
     AnnotatorRecordDao annotatorRecordDao;
+
+    @Autowired
+    DocLabelService docLabelService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -58,6 +64,16 @@ public class LabelInfoServiceImpl extends ServiceImpl<LabelInfoDao, LabelInfoEnt
 
         });
         return R.ok();
+    }
+
+    @Override
+    public List<Long> getOldLabels(Long docId) {
+        List<DocLabelEntity> docLabelList = docLabelService.list(new QueryWrapper<DocLabelEntity>().eq("doc_id", docId));
+        List<Long> oldLabelList = new ArrayList<>();
+        docLabelList.forEach(i->{
+            oldLabelList.add(i.getLabelId());
+        });
+        return oldLabelList;
     }
 
 }

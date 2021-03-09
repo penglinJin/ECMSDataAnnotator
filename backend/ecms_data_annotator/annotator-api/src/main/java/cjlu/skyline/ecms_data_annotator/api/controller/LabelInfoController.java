@@ -1,14 +1,11 @@
 package cjlu.skyline.ecms_data_annotator.api.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.LabelInfoEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
@@ -29,6 +26,20 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
 public class LabelInfoController {
     @Autowired
     private LabelInfoService labelInfoService;
+
+
+    /**
+     * get the old labels of this doc
+     * @author 金鹏霖
+     * @date 2021/3/9
+     * @param docId
+     * @return cjlu.skyline.ecms_data_annotator.common.utils.R
+     */
+    @GetMapping("/oldLabels")
+    public R getOldLabels(@RequestParam("docId") Long docId){
+        List<Long> oldLabels = labelInfoService.getOldLabels(docId);
+        return R.ok().put("oldLabels",oldLabels);
+    }
 
     /**
      * 列表

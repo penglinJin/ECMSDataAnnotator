@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -27,6 +28,9 @@ public class AnnotatorApiApplicationTests {
     @Autowired
     AnnotatorRecordService annotatorRecordService;
 
+    @Autowired
+    LabelInfoService labelInfoService;
+
     @Test
     public void testAn(){
         //docService.queryPrePage();
@@ -35,6 +39,11 @@ public class AnnotatorApiApplicationTests {
 //        queryWrapper.eq("doc_id",id).eq("label_id",7);
 //        AnnotatorRecordEntity one = annotatorRecordService.getOne(queryWrapper);
 //        System.out.println(one);
-//        System.out.println(ApiUtils.transToLabelInfo(one.getNewLabels()));
+//        List<Long> longs = ApiUtils.transToLabelInfo(one.getNewLabels());
+//        System.out.println(longs);
+//        System.out.println(ApiUtils.transToString(longs));
+//        Long id=Long.valueOf("160314514860059786");
+//        List<Long> oldLabels = labelInfoService.getOldLabels(id);
+//        System.out.println(oldLabels);
     }
 }

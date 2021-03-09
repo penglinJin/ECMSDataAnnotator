@@ -4,6 +4,7 @@ import cjlu.skyline.ecms_data_annotator.api.dao.*;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
 import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
+import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -62,6 +63,9 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
     @Autowired
     DocStateService docStateService;
+
+    @Autowired
+    LabelInfoService labelInfoService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -146,23 +150,17 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
     @Override
     public R annotate(Long[] labelIds, Long userId, Long docId) {
-        for (int i=0;i<labelIds.length;i++){
-            Long labelId=labelIds[i];
-            //create annotate record
-            AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
-            annotationRecord.setAnnotatorTypeCode(0);
-            annotationRecord.setLabelId(labelId);
-            annotationRecord.setUserId(userId);
-            annotationRecord.setDocId(docId);
-            annotatorRecordDao.insert(annotationRecord);
+        List<Long> news = Arrays.asList(labelIds);
+        String newLabels=ApiUtils.transToString(news);
+        List<Long> olds=labelInfoService.getOldLabels(docId);
+        String oldLabels=ApiUtils.transToString(olds);
 
-            //create doc label
-            DocLabelEntity docLabelEntity=new DocLabelEntity();
-            docLabelEntity.setDocId(docId);
-            docLabelEntity.setLabelId(labelId);
-            docLabelDao.insert(docLabelEntity);
-
-        }
+        AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
+        annotationRecord.setAnnotatorTypeCode(0);
+        annotationRecord.setUserId(userId);
+        annotationRecord.setDocId(docId);
+        annotationRecord.setOldLabels(oldLabels);
+        annotationRecord.setNewLabels(newLabels);
 
         //update doc state
         QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();
