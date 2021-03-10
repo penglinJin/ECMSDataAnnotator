@@ -76,4 +76,9 @@ public class LabelInfoServiceImpl extends ServiceImpl<LabelInfoDao, LabelInfoEnt
         return oldLabelList;
     }
 
+    @Override
+    public LabelInfoEntity getOneByName(String name) {
+        return this.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",name));
+    }
+
 }

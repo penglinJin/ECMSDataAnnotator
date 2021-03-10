@@ -21,5 +21,6 @@ public interface LabelInfoService extends IService<LabelInfoEntity> {
     R deleteBatch(Long[] labelIds);
 
     List<Long> getOldLabels(Long docId);
+    LabelInfoEntity getOneByName(String name);
 }
 

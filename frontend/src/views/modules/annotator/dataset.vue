@@ -252,8 +252,8 @@ export default {
     },
     submitForm(formName) {
       console.log("dataForm", this.labelForm);
-      console.log("1111labelContents11111", this.labelContents);
-      console.log("1111labelIds11111", this.labelForm.labelIds);
+      // console.log("1111labelContents11111", this.labelContents);
+      // console.log("1111labelIds11111", this.labelForm.labelIds);
       var labelIds = this.labelForm.labelIds;
       this.annotationVisible = false;
       this.$http({
@@ -275,6 +275,7 @@ export default {
         }
         this.annotationVisible = false;
         this.getDataList();
+        this.resetForm(formName);
       });
     },
     resetForm(formName) {

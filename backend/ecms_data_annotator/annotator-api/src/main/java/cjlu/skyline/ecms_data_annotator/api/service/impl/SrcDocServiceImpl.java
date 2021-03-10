@@ -5,6 +5,7 @@ import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
 import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
+import cjlu.skyline.ecms_data_annotator.api.utils.NLPUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,13 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
     private static String JPG = "jpg";
 
+    private static String POSITIVE="positive";
 
-    @Value("${stock.dir}")
-    private String stockDir;
+    private static String NEGATIVE="negative";
+
+
+    @Autowired
+    DocLabelService docLabelService;
 
     @Autowired
     DocService docService;
@@ -116,8 +121,22 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
                     docEntity.setDocContent(current);
 
 
-                    //TODO need to be improved after implement NLP module
-                    docEntity.setNlpLabel("positive");
+                    if(NLPUtils.getScore(current)>=2){
+                        docEntity.setNlpLabel(POSITIVE);
+                        LabelInfoEntity positiveEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",POSITIVE));
+                        DocLabelEntity docLabelEntity=new DocLabelEntity();
+                        docLabelEntity.setDocId(docId);
+                        docLabelEntity.setLabelId(positiveEntity.getLabelId());
+                        docLabelService.save(docLabelEntity);
+                    }else {
+                        docEntity.setNlpLabel(NEGATIVE);
+                        LabelInfoEntity negativeEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",NEGATIVE));
+                        DocLabelEntity docLabelEntity=new DocLabelEntity();
+                        docLabelEntity.setDocId(docId);
+                        docLabelEntity.setLabelId(negativeEntity.getLabelId());
+                        docLabelService.save(docLabelEntity);
+                    }
+
 
                     docService.save(docEntity);
 
@@ -153,7 +172,6 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
             docEntity.setDocContent(filePath);
 
             //TODO need to be improved after implement NLP module
-            docEntity.setNlpLabel("positive");
             docService.save(docEntity);
 
             DocStateEntity docStateEntity = new DocStateEntity();
