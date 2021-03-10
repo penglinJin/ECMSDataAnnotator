@@ -24,17 +24,17 @@
             </el-badge>
           </template>
         </el-menu-item>
-        <el-menu-item index="2">
+        <!-- <el-menu-item index="2">
           <el-badge value="hot">
             <a href="https://www.renren.io/" target="_blank">Community</a>
           </el-badge>
-        </el-menu-item>
-        <el-submenu index="3">
+        </el-menu-item> -->
+        <!-- <el-submenu index="3">
           <template slot="title">Git Code</template>
           <el-menu-item index="2-1"><a href="https://github.com/renrenio/renren-fast-vue" target="_blank">Front</a></el-menu-item>
           <el-menu-item index="2-2"><a href="https://gitee.com/renrenio/renren-fast" target="_blank">Back</a></el-menu-item>
           <el-menu-item index="2-3"><a href="https://gitee.com/renrenio/renren-generator" target="_blank">Code-generator</a></el-menu-item>
-        </el-submenu>
+        </el-submenu> -->
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">

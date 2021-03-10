@@ -141,10 +141,10 @@
         </el-table-column>
         <el-table-column
           fixed="right"
-          prop="createTime"
+          prop="createUserId"
           header-align="center"
           align="center"
-          label="CreateTime"
+          label="CreateUserId"
         >
         </el-table-column>
       </el-table>
@@ -232,7 +232,7 @@ export default {
   },
 
   methods: {
-        handleClose(){
+    handleClose() {
       console.log("about to close");
     },
     addLabel() {
@@ -247,6 +247,13 @@ export default {
             prefixKey: this.addForm.prefixKey,
             backgroundColor: this.addForm.textColor
           })
+        }).then(() => {
+          this.$message({
+            message: "label created",
+            type: "success",
+            duration: 1000
+          });
+          this.getDataList();
         });
       } else {
         return false;
@@ -268,7 +275,7 @@ export default {
           return false;
         }
       });
-      this.addVisible=false;
+      this.addVisible = false;
       this.getDataList();
     },
     resetForm(formName) {
@@ -331,6 +338,7 @@ export default {
           this.dataList = [];
           this.totalPage = 0;
         }
+        console.log("dataList", this.dataList);
         this.dataListLoading = false;
       });
     },

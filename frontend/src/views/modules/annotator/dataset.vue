@@ -46,9 +46,8 @@
     </el-dialog>
     <div>
       <el-row>
-        <upload v-model="fileUrl"></upload>
+        <upload v-model="fileUrl" v-if="true"></upload>
 
-        <el-button type="primary" @click.native="testMethod">Test</el-button>
         <el-button type="primary">Export Dataset</el-button>
         <el-button
           v-if="isAuth('annotator:doc:deleteBatch')"
@@ -91,8 +90,46 @@
           prop="docContent"
           header-align="center"
           align="center"
-          width="800"
+          width="600"
           label="Text"
+        >
+        </el-table-column>
+        <el-table-column label="img" align="center" height="10px" prop="img">
+          <template slot-scope="scope">
+            <el-popover placement="right" title="" trigger="hover">
+              <img :src="scope.row.img" />
+              <img
+                slot="reference"
+                :src="scope.row.img"
+                :alt="scope.row.img"
+                style="max-height: 180;max-width: 320px"
+              />
+            </el-popover>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="labels"
+          header-align="center"
+          align="center"
+          width="100"
+          label="Labels"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="nlpLabel"
+          header-align="center"
+          align="center"
+          width="100"
+          label="NlpLabel"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="docState"
+          header-align="center"
+          align="center"
+          width="100"
+          label="state"
         >
         </el-table-column>
         <el-table-column
@@ -137,6 +174,17 @@ export default {
   props: {},
   data() {
     return {
+      dataForm: {
+        id: 0,
+        userName: "",
+        password: "",
+        comfirmPassword: "",
+        salt: "",
+        email: "",
+        mobile: "",
+        roleIdList: [],
+        status: 1
+      },
       labelForm: {
         oldLabels: "",
         labelContents: []
@@ -185,6 +233,23 @@ export default {
   },
 
   methods: {
+    getRole() {
+      this.$http({
+        url: this.$http.adornUrl(`/sys/user/info/${this.userId}`),
+        method: "get",
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.dataForm.userName = data.user.username;
+          this.dataForm.salt = data.user.salt;
+          this.dataForm.email = data.user.email;
+          this.dataForm.mobile = data.user.mobile;
+          this.dataForm.roleIdList = data.user.roleIdList;
+          this.dataForm.status = data.user.status;
+        }
+        console.log("daatForm", this.dataForm);
+      });
+    },
     submitForm(formName) {
       console.log("dataForm", this.labelForm);
       console.log("1111labelContents11111", this.labelContents);
@@ -275,18 +340,18 @@ export default {
             let contents = [];
             for (var i = 0; i < this.oldLabels.length; i++) {
               for (var j = 0; j < this.labelList.length; j++) {
-                if(this.oldLabels[i]==this.labelList[j].labelId){
-                  console.log("1111111",this.labelList[j].labelId);
+                if (this.oldLabels[i] == this.labelList[j].labelId) {
+                  console.log("1111111", this.labelList[j].labelId);
                   contents.push(this.labelList[j].labelContent);
                 }
               }
             }
-            console.log("--contents--",contents);
-            var s="";
-            for(var m=0;m<contents.length;m++){
-              s=s+contents[m]+" ";
+            console.log("--contents--", contents);
+            var s = "";
+            for (var m = 0; m < contents.length; m++) {
+              s = s + contents[m] + " ";
             }
-            this.labelForm.oldLabels=s;
+            this.labelForm.oldLabels = s;
           }
           this.annotationVisible = true;
         });
@@ -409,8 +474,9 @@ export default {
   destroyed() {},
   activated() {
     console.log("sssssssssssssssssssssssssssssssss");
-    this.getDataList();
     this.getUserInfo();
+    this.getRole();
+    this.getDataList();
   }
 };
 </script>

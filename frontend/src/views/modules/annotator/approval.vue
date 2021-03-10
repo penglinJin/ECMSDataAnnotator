@@ -55,15 +55,28 @@
           prop="docContent"
           header-align="center"
           align="center"
-          width="500"
+          width="400"
           label="Text"
         >
+        </el-table-column>
+        <el-table-column label="img" align="center" height="10px" prop="docContent" width="300">
+          <template slot-scope="scope">
+            <el-popover placement="right" title="" trigger="hover">
+              <img :src="scope.row.docContent" />
+              <img
+                slot="reference"
+                :src="scope.row.docContent"
+                :alt="scope.row.docContent"
+                style="max-height: 180;max-width: 320px"
+              />
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column
           prop="oldLabelNames"
           header-align="center"
           align="center"
-          width="200"
+          width="100"
           label="oldLabel"
         >
         </el-table-column>
@@ -71,7 +84,7 @@
           prop="updatedLabelNames"
           header-align="center"
           align="center"
-          width="200"
+          width="100"
           label="newLabel"
         >
         </el-table-column>
@@ -165,7 +178,7 @@ export default {
           userId: this.userId
         })
       }).then(data => {
-        console.log("1111233",data);
+        console.log("1111233", data);
         if (data.status == 200) {
           this.$message({
             message: "annotate has been approved",
@@ -191,8 +204,8 @@ export default {
           userId: this.userId
         })
       }).then(data => {
-        console.log("1111233",data);
-        if ( data.status == 200) {
+        console.log("1111233", data);
+        if (data.status == 200) {
           this.$message({
             message: "annotate has been rejected",
             type: "success",

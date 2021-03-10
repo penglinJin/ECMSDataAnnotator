@@ -16,7 +16,11 @@ import lombok.Data;
 public class DocVo extends DocEntity {
     private static final long serialVersionUID = 1L;
 
+    private String labels;
+
     private String docState;
+
+    private String img;
 
 
 }

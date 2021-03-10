@@ -3,9 +3,7 @@ package cjlu.skyline.ecms_data_annotator.api.service.impl;
 import cjlu.skyline.ecms_data_annotator.api.dao.*;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
-import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
-import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
-import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
+import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -28,7 +26,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.Query;
 
-import cjlu.skyline.ecms_data_annotator.api.service.SrcDocService;
 import org.springframework.util.StringUtils;
 
 
@@ -38,29 +35,23 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     @Autowired
     ThirdPartyFeignService thirdPartyFeignService;
 
-    private static String JSON="json";
+    private static String JSON = "json";
 
-    private static String TXT="txt";
+    private static String TXT = "txt";
 
-    private static String PNG="png";
+    private static String PNG = "png";
 
-    private static String JPG="jpg";
+    private static String JPG = "jpg";
 
 
     @Value("${stock.dir}")
     private String stockDir;
 
     @Autowired
-    SrcDocDao srcDocDao;
-
-    @Autowired
-    DocDao docDao;
+    DocService docService;
 
     @Autowired
     AnnotatorRecordService annotatorRecordService;
-
-    @Autowired
-    DocLabelDao docLabelDao;
 
     @Autowired
     DocStateService docStateService;
@@ -79,34 +70,34 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     }
 
     @Override
-    public R processDataset(String filePath,Long userId) {
+    public R processDataset(String filePath, Long userId) {
 
         //insert srcDoc into database
-        SrcDocEntity srcDocEntity=new SrcDocEntity();
-        Long srcDocId=ApiUtils.getUniqId();
+        SrcDocEntity srcDocEntity = new SrcDocEntity();
+        Long srcDocId = ApiUtils.getUniqId();
         srcDocEntity.setSrcDocId(srcDocId);
         srcDocEntity.setSrcDocPath(filePath);
-        int i=filePath.indexOf("_");
-        String fileName=filePath.substring(i+1);
+        int i = filePath.indexOf("_");
+        String fileName = filePath.substring(i + 1);
         srcDocEntity.setSrcDocName(fileName);
 
-        int j=fileName.indexOf(".");
-        String fileType=fileName.substring(j+1);
-        if (!StringUtils.isEmpty(fileType)){
-            if (fileType.equals(JSON)||fileType.equals(TXT)){
+        int j = fileName.indexOf(".");
+        String fileType = fileName.substring(j + 1);
+        if (!StringUtils.isEmpty(fileType)) {
+            if (fileType.equals(JSON) || fileType.equals(TXT)) {
                 srcDocEntity.setDocType(0);
-            }else if (fileType.equals(PNG)||fileType.equals(JPG)){
+            } else if (fileType.equals(PNG) || fileType.equals(JPG)) {
                 srcDocEntity.setDocType(1);
             }
         }
         srcDocEntity.setCreateUserId(userId);
         srcDocEntity.setCreateTime(new Date());
-        srcDocDao.insert(srcDocEntity);
+        this.save(srcDocEntity);
 
 
         URL url = null;
 
-        if (fileType.equals(TXT)){
+        if (fileType.equals(TXT)) {
             try {
                 url = new URL(filePath);
 
@@ -115,17 +106,22 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
                 String current;
                 while ((current = in.readLine()) != null) {
-                    DocEntity docEntity=new DocEntity();
-                    Long docId=ApiUtils.getUniqId();
+                    DocEntity docEntity = new DocEntity();
+                    Long docId = ApiUtils.getUniqId();
                     docEntity.setDocId(docId);
                     docEntity.setSrcDocId(srcDocId);
                     docEntity.setDocType(0);
                     docEntity.setCreateUserId(userId);
                     docEntity.setCreateTime(new Date());
                     docEntity.setDocContent(current);
-                    docDao.insert(docEntity);
 
-                    DocStateEntity docStateEntity=new DocStateEntity();
+
+                    //TODO need to be improved after implement NLP module
+                    docEntity.setNlpLabel("positive");
+
+                    docService.save(docEntity);
+
+                    DocStateEntity docStateEntity = new DocStateEntity();
                     docStateEntity.setDocId(docId);
                     docStateEntity.setCreateTime(new Date());
                     docStateEntity.setUpdateTime(new Date());
@@ -140,23 +136,48 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
             return R.ok("txt file process success");
         }
 
-        if (fileType.equals(JSON)){
+        if (fileType.equals(JSON)) {
+            return R.ok("JSON file process success");
+        }
 
+        if (fileType.equals(JPG) || fileType.equals(PNG)) {
+
+
+            DocEntity docEntity = new DocEntity();
+            Long docId = ApiUtils.getUniqId();
+            docEntity.setDocId(docId);
+            docEntity.setSrcDocId(srcDocId);
+            docEntity.setDocType(1);
+            docEntity.setCreateUserId(userId);
+            docEntity.setCreateTime(new Date());
+            docEntity.setDocContent(filePath);
+
+            //TODO need to be improved after implement NLP module
+            docEntity.setNlpLabel("positive");
+            docService.save(docEntity);
+
+            DocStateEntity docStateEntity = new DocStateEntity();
+            docStateEntity.setDocId(docId);
+            docStateEntity.setCreateTime(new Date());
+            docStateEntity.setUpdateTime(new Date());
+            docStateEntity.setDocStat(0);
+            docStateService.save(docStateEntity);
+
+            return R.ok("pic file process success");
         }
 
 
-
-        return R.ok();
+        return R.error("not txt,json,png or jpg file");
     }
 
     @Override
     public R annotate(Long[] labelIds, Long userId, Long docId) {
         List<Long> news = Arrays.asList(labelIds);
-        String newLabels=ApiUtils.transToString(news);
-        List<Long> olds=labelInfoService.getOldLabels(docId);
-        String oldLabels=ApiUtils.transToString(olds);
+        String newLabels = ApiUtils.transToString(news);
+        List<Long> olds = labelInfoService.getOldLabels(docId);
+        String oldLabels = ApiUtils.transToString(olds);
 
-        AnnotatorRecordEntity annotationRecord=new AnnotatorRecordEntity();
+        AnnotatorRecordEntity annotationRecord = new AnnotatorRecordEntity();
         annotationRecord.setAnnotatorTypeCode(0);
         annotationRecord.setUserId(userId);
         annotationRecord.setDocId(docId);
@@ -167,12 +188,12 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         annotatorRecordService.save(annotationRecord);
 
         //update doc state
-        QueryWrapper<DocStateEntity> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("doc_id",docId);
-        DocStateEntity docState=docStateService.getOne(queryWrapper);
+        QueryWrapper<DocStateEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("doc_id", docId);
+        DocStateEntity docState = docStateService.getOne(queryWrapper);
         //set status to wait for approval
         docState.setDocStat(1);
-        docStateService.update(docState,new UpdateWrapper<DocStateEntity>().eq("doc_id",docId));
+        docStateService.update(docState, new UpdateWrapper<DocStateEntity>().eq("doc_id", docId));
         return R.ok();
     }
 

@@ -54,4 +54,6 @@ public class DocEntity implements Serializable {
 	 */
 	private Long createUserId;
 
+	private String nlpLabel;
+
 }
