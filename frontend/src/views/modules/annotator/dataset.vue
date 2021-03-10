@@ -13,14 +13,9 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <!-- <el-form-item label="id" prop="labelIds">
-          <el-select
-            v-model="labelForm.labels"
-            placeholder=""
-            multiple
-            disabled
-          ></el-select>
-        </el-form-item> -->
+        <el-form-item label="oldLabels" prop="oldLabels">
+          <el-input v-model="labelForm.oldLabels" disabled></el-input>
+        </el-form-item>
         <el-form-item label="label" prop="labelContents">
           <el-select
             v-model="labelForm.labelContents"
@@ -101,14 +96,6 @@
         >
         </el-table-column>
         <el-table-column
-          prop="docState"
-          header-align="center"
-          align="center"
-          width="100"
-          label="docState"
-        >
-        </el-table-column>
-        <el-table-column
           prop="createTime"
           header-align="center"
           align="center"
@@ -151,6 +138,7 @@ export default {
   data() {
     return {
       labelForm: {
+        oldLabels: "",
         labelContents: []
       },
       newLabels: [],
@@ -201,7 +189,7 @@ export default {
       console.log("dataForm", this.labelForm);
       console.log("1111labelContents11111", this.labelContents);
       console.log("1111labelIds11111", this.labelForm.labelIds);
-      var labelIds=this.labelForm.labelIds;
+      var labelIds = this.labelForm.labelIds;
       this.annotationVisible = false;
       this.$http({
         url: this.$http.adornUrl("/annotator/srcdoc/annotate"),
@@ -210,7 +198,7 @@ export default {
           userId: this.userId,
           docId: this.tempData.docId
         }),
-        data: this.$http.adornData(labelIds,false)
+        data: this.$http.adornData(labelIds, false)
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$message({
@@ -257,23 +245,51 @@ export default {
     asyncLabel() {},
     annotate(val) {
       this.$http({
-        url: this.$http.adornUrl("/annotator/labelinfo/list"),
+        url: this.$http.adornUrl("/annotator/labelinfo/oldLabels"),
         method: "get",
         params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          content: ""
+          docId: val.docId
         })
       }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.labelList = data.page.list;
+        if (data.code == 0) {
+          this.oldLabels = data.oldLabels;
+          console.log("---oldLabels---", this.oldLabels);
         }
-        console.log("---------labelList---------------", this.labelList);
-        console.log("--------text----------", val);
-        this.docContent = val.docContent;
-        this.tempData = val;
-        this.annotationVisible = true;
-      });
+      }),
+        this.$http({
+          url: this.$http.adornUrl("/annotator/labelinfo/list"),
+          method: "get",
+          params: this.$http.adornParams({
+            page: this.pageIndex,
+            limit: this.pageSize,
+            content: ""
+          })
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.labelList = data.page.list;
+          }
+          this.docContent = val.docContent;
+          this.tempData = val;
+
+          if (this.oldLabels != null) {
+            let contents = [];
+            for (var i = 0; i < this.oldLabels.length; i++) {
+              for (var j = 0; j < this.labelList.length; j++) {
+                if(this.oldLabels[i]==this.labelList[j].labelId){
+                  console.log("1111111",this.labelList[j].labelId);
+                  contents.push(this.labelList[j].labelContent);
+                }
+              }
+            }
+            console.log("--contents--",contents);
+            var s="";
+            for(var m=0;m<contents.length;m++){
+              s=s+contents[m]+" ";
+            }
+            this.labelForm.oldLabels=s;
+          }
+          this.annotationVisible = true;
+        });
     },
     deleteHandle(id) {
       var ids = id
@@ -357,7 +373,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.userId = data.user.userId;
-          console.log("user",data.user);
+          console.log("user", data.user);
           console.log("userId=", this.userId);
         }
       });

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -37,6 +38,7 @@ public class AnnotatorRecordEntity implements Serializable {
 	/**
 	 * 
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private Long docId;
 	/**
 	 * 0更新1删除
