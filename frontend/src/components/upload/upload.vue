@@ -10,8 +10,8 @@
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
       :on-preview="handlePreview">
-      <el-button size="small" type="primary">Import DataSet</el-button>
-      <div slot="tip" class="el-upload__tip">text only, not over 10MB</div>
+      <el-button size="small" type="primary">Select File</el-button>
+      <div slot="tip" class="el-upload__tip">  not over 10MB</div>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="fileList[0].url" alt="">

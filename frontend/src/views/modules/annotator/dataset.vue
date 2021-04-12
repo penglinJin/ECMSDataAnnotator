@@ -1,7 +1,22 @@
 <template>
   <div>
     <el-dialog
-      title="提示"
+      title="Upload Data"
+      :visible.sync="uploadVisible"
+      width="30%"
+      :before-close="handleClose2"
+    >
+    <h1>Select a file format</h1>
+    <el-radio v-model="radio" label="1">Plain Text</el-radio>
+    <el-radio v-model="radio" label="2">JSON</el-radio>
+    <br>
+      <span class="span1">{{dataFormat}}</span>
+      <upload v-model="fileUrl" v-if="true"></upload>
+    </el-dialog>
+
+
+    <el-dialog
+      title="Annotate"
       :visible.sync="annotationVisible"
       width="30%"
       :before-close="handleClose"
@@ -46,8 +61,11 @@
     </el-dialog>
     <div>
       <el-row>
-        <upload v-model="fileUrl" v-if="true"></upload>
-
+        <el-button 
+        type="primary"
+        @click="test1()"
+        >Import Dataset</el-button>
+        
         <el-button type="primary">Export Dataset</el-button>
         <el-button
           v-if="isAuth('annotator:doc:deleteBatch')"
@@ -196,6 +214,7 @@ export default {
       rules: {},
       tempData: {},
       docContent: "",
+      uploadVisible: false,
       annotationVisible: false,
       labelList: [],
       dataList: [],
@@ -207,6 +226,8 @@ export default {
       addOrUpdateVisible: false,
       fileUrl: "",
       input: "",
+      radio: "1",
+      dataFormat: 'EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama',
       dataForm: {
         content: ""
       }
@@ -228,6 +249,16 @@ export default {
     fileUrl: function(val, oldVal) {
       if (val != null) {
         this.processDataSet(val);
+        this.uploadVisible=false;
+      }
+    },
+    radio: function(val,oldVal){
+      if(val !=null){
+        if(val==1){
+          this.dataFormat='EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama';
+        }else if(val==2){
+          this.dataFormat='{"text": "Terrible customer service.", "labels": ["negative"]} \n {"text": "Really great transaction.", "labels": ["positive"]} \n {"text": "Great price.", "labels": ["positive"]}';
+        }
       }
     }
   },
@@ -283,6 +314,10 @@ export default {
     },
     handleClose() {
       this.annotationVisible = false;
+      console.log("about to close");
+    },
+     handleClose2() {
+      this.uploadVisible = false;
       console.log("about to close");
     },
     changeSelectVal(val) {
@@ -461,6 +496,9 @@ export default {
     },
     current_change: function(currentPage) {
       this.currentPage = currentPage;
+    },
+    test1(){
+      this.uploadVisible=true;
     }
   },
 
@@ -481,4 +519,14 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+  .span1 {
+    display: inline-block;
+    width: 80%;
+    margin: 30px 0px;
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    white-space: pre-wrap;
+  }
+</style>

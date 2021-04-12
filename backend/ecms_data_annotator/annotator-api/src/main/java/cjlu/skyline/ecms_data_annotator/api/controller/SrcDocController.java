@@ -27,6 +27,18 @@ public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;
 
+    /**
+     * TODO
+     * @author 金鹏霖
+     * @date 2021/4/8
+     * @param
+     * @return cjlu.skyline.ecms_data_annotator.common.utils.R
+     */
+    @GetMapping("/exportFile")
+    public R exportFile(){
+        return R.ok();
+    }
+
     @PostMapping("test")
     public R test(){
         return R.ok("ok");

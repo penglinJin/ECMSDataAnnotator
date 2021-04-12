@@ -1,15 +1,17 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
 import cjlu.skyline.ecms_data_annotator.api.dao.*;
+import cjlu.skyline.ecms_data_annotator.api.dto.JsonDto;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
 import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.utils.NLPUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -99,6 +102,8 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         srcDocEntity.setCreateTime(new Date());
         this.save(srcDocEntity);
 
+        LabelInfoEntity positiveEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",POSITIVE));
+        LabelInfoEntity negativeEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",NEGATIVE));
 
         URL url = null;
 
@@ -123,14 +128,12 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
                     if(NLPUtils.getScore(current)>=2){
                         docEntity.setNlpLabel(POSITIVE);
-                        LabelInfoEntity positiveEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",POSITIVE));
                         DocLabelEntity docLabelEntity=new DocLabelEntity();
                         docLabelEntity.setDocId(docId);
                         docLabelEntity.setLabelId(positiveEntity.getLabelId());
                         docLabelService.save(docLabelEntity);
                     }else {
                         docEntity.setNlpLabel(NEGATIVE);
-                        LabelInfoEntity negativeEntity=labelInfoService.getOne(new QueryWrapper<LabelInfoEntity>().eq("label_content",NEGATIVE));
                         DocLabelEntity docLabelEntity=new DocLabelEntity();
                         docLabelEntity.setDocId(docId);
                         docLabelEntity.setLabelId(negativeEntity.getLabelId());
@@ -156,6 +159,77 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         }
 
         if (fileType.equals(JSON)) {
+
+            List<LabelInfoEntity> labels=labelInfoService.list();
+
+            List<String> labelContentList = labels.stream().map(LabelInfoEntity::getLabelContent).collect(Collectors.toList());
+            try {
+                url = new URL(filePath);
+
+                URLConnection conn = url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+
+                String current;
+                while ((current = in.readLine()) != null) {
+                    JSONObject jsonObject=JSONObject.parseObject(current);
+                    if (!jsonObject.containsKey("text")||!jsonObject.containsKey("labels")){
+                        return R.error("JSON format error");
+                    }
+                    String text=jsonObject.getString("text");
+                    List<String> labelsList =jsonObject.getJSONArray("labels").toJavaList(String.class);
+                    JsonDto jsonDto=new JsonDto();
+                    jsonDto.setText(text);
+                    jsonDto.setLabels(labelsList);
+
+                    List<String> reduce = labelsList.stream().filter(item -> !labelContentList.contains(item)).collect(Collectors.toList());
+                    if (reduce.size()>0){
+                        return R.error("Some labels are uncreated");
+                    }
+
+
+
+                    DocEntity docEntity = new DocEntity();
+                    Long docId = ApiUtils.getUniqId();
+                    docEntity.setDocId(docId);
+                    docEntity.setSrcDocId(srcDocId);
+                    docEntity.setDocType(0);
+                    docEntity.setCreateUserId(userId);
+                    docEntity.setCreateTime(new Date());
+                    docEntity.setDocContent(text);
+
+                    //set labels
+                    List<LabelInfoEntity> intersection=labels.stream().filter(item->labelsList.contains(item.getLabelContent())).collect(Collectors.toList());
+                    intersection.forEach(item->{
+                        DocLabelEntity docLabelEntity=new DocLabelEntity();
+                        docLabelEntity.setLabelId(item.getLabelId());
+                        docLabelEntity.setDocId(docId);
+                        docLabelService.save(docLabelEntity);
+                    });
+
+                    //if there are no labels in origin data
+
+                    if(NLPUtils.getScore(text)>=2){
+                        docEntity.setNlpLabel(POSITIVE);
+                    }else {
+                        docEntity.setNlpLabel(NEGATIVE);
+                    }
+
+                    docService.save(docEntity);
+
+                    DocStateEntity docStateEntity = new DocStateEntity();
+                    docStateEntity.setDocId(docId);
+                    docStateEntity.setCreateTime(new Date());
+                    docStateEntity.setUpdateTime(new Date());
+                    docStateEntity.setDocStat(0);
+                    docStateService.save(docStateEntity);
+
+
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return R.ok("JSON file process success");
         }
 
