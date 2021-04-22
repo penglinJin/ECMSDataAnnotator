@@ -8,6 +8,8 @@
         <result property="docLabelId" column="doc_label_id"/>
         <result property="docId" column="doc_id"/>
         <result property="labelId" column="label_id"/>
+        <result property="startOffset" column="start_offset"/>
+        <result property="endOffset" column="end_offset"/>
     </resultMap>
 
 

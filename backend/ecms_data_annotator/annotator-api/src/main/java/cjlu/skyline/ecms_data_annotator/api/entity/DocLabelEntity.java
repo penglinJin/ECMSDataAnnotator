@@ -32,5 +32,13 @@ public class DocLabelEntity implements Serializable {
 	 * 
 	 */
 	private Long labelId;
+	/**
+	 * start index of the annotate area
+	 */
+	private Long startOffset;
+	/**
+	 * end index of the annotate area
+	 */
+	private Long endOffset;
 
 }

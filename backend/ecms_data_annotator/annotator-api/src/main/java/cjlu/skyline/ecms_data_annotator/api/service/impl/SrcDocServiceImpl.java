@@ -1,6 +1,7 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
 import cjlu.skyline.ecms_data_annotator.api.dao.*;
+import cjlu.skyline.ecms_data_annotator.api.dto.AnnotationDto;
 import cjlu.skyline.ecms_data_annotator.api.dto.JsonDto;
 import cjlu.skyline.ecms_data_annotator.api.entity.*;
 import cjlu.skyline.ecms_data_annotator.api.feign.ThirdPartyFeignService;
@@ -8,13 +9,19 @@ import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.utils.NLPUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -287,6 +294,47 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         docState.setDocStat(1);
         docStateService.update(docState, new UpdateWrapper<DocStateEntity>().eq("doc_id", docId));
         return R.ok();
+    }
+
+    /**
+     * form json
+     * @author 金鹏霖
+     * @date 2021/4/13
+     * @param
+     * @return org.springframework.http.ResponseEntity<org.springframework.core.io.FileSystemResource>
+     */
+    @Override
+    public ResponseEntity<FileSystemResource> downloadFile() {
+        //1.collect all docs
+        List<DocEntity> docEntities = docService.list();
+        for(int i=0;i<docEntities.size();i++){
+            DocEntity docEntity=docEntities.get(i);
+            //each doc form to a jsonObject as a line in final json file
+            JSONObject object=new JSONObject();
+            
+            AnnotationDto annotationDto=new AnnotationDto();
+
+        }
+        return null;
+    }
+
+    public ResponseEntity<FileSystemResource> export(File file) {
+        if (file == null) {
+            return null;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", "attachment; filename=" + file.getName());
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new FileSystemResource(file));
     }
 
 

@@ -1,13 +1,20 @@
 package cjlu.skyline.ecms_data_annotator.api;
 
 
-import cjlu.skyline.ecms_data_annotator.api.dto.JsonDto;
+import cjlu.skyline.ecms_data_annotator.api.dto.AnnotationDto;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,9 +34,11 @@ public class AnnotatorApiApplicationTests {
 //
 //    @Autowired
 //    SysUserService sysUserService;
+@Value("${tmp.location}")
+private String tmpLocation;
 
     @Test
-    public void testAn(){
+    public void testAn() throws IOException {
 
 //        Long id=Long.valueOf("1");
 //        SysUserEntity user = sysUserService.getOne(new QueryWrapper<SysUserEntity>().eq("user_id", id));
@@ -53,5 +62,32 @@ public class AnnotatorApiApplicationTests {
 //        List<String> labelsList =jsonObject.getJSONArray("labels").toJavaList(String.class);
 //        System.out.println(text);
 //        System.out.println(labelsList);
+
+//        JSONObject jsonObject=new JSONObject();
+//        jsonObject.put("text","12345");
+//        JSONArray jsonArray = new JSONArray();
+//        AnnotationDto annotationDto = new AnnotationDto();
+//        annotationDto.setCreatedAt(new Date());
+//        annotationDto.setLabelName("positive");
+//        annotationDto.setLabelId(Long.parseLong("1"));
+//        jsonArray.add(annotationDto);
+//        jsonObject.put("annotations",jsonArray);
+//        System.out.println(jsonObject);
+
+
+
+//            File file=new File(tmpLocation);
+//            if (file.exists()){
+//                file.delete();
+//            }
+//            FileWriter fileWriter=new FileWriter(file);
+//            PrintWriter printWriter = new PrintWriter(fileWriter);
+//            printWriter.write("12345\n2223332");
+//            printWriter.close();
+
+
+        //file.delete();
+
+
     }
 }

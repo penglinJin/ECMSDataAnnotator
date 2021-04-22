@@ -4,6 +4,8 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.util.Map;
@@ -22,5 +24,7 @@ public interface SrcDocService extends IService<SrcDocEntity> {
     R processDataset(String filePath,Long userId);
 
     R annotate(Long[] labelIds, Long userId, Long docId);
+
+    ResponseEntity<FileSystemResource> downloadFile();
 }
 

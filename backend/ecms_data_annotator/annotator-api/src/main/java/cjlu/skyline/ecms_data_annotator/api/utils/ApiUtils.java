@@ -1,7 +1,13 @@
 package cjlu.skyline.ecms_data_annotator.api.utils;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -11,6 +17,23 @@ import java.util.*;
  * @date 2021/3/3
  */
 public class ApiUtils {
+
+    @Value("${tmp.location}")
+    private static String tmpLocation;
+
+    public static File getExportJson() throws IOException {
+        File file=new File(tmpLocation);
+        if (file.exists()){
+            file.delete();
+        }
+        FileWriter fileWriter=new FileWriter(file);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        printWriter.write("12345\n22233");
+        printWriter.close();
+
+        return file;
+    }
 
     public static String transToString(List<Long> labelList){
         StringBuilder stringBuilder = new StringBuilder();
