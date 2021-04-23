@@ -1,9 +1,11 @@
 package cjlu.skyline.ecms_data_annotator.api.service;
 
+import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,5 +23,6 @@ public interface AnnotatorRecordService extends IService<AnnotatorRecordEntity> 
 
     AnnotatorRecordEntity getLabelApproveRecord(Long labelId);
 
+    List<StaticsVo> getStatics();
 }
 

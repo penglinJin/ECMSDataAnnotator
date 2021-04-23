@@ -1,8 +1,12 @@
 package cjlu.skyline.ecms_data_annotator.api.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,9 +90,11 @@ public class AnnotatorRecordController {
     /**
      *  注释数量统计
      */
-    @GetMapping("/")
+    @GetMapping("/numStatics")
     public R annotationNum(){
+        List<StaticsVo> statics = annotatorRecordService.getStatics();
 
+        return R.ok().put("numStatics",statics);
     }
 
 }

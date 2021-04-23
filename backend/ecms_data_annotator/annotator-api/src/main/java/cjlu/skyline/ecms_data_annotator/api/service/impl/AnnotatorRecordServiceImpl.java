@@ -8,6 +8,7 @@ import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
 import cjlu.skyline.ecms_data_annotator.api.service.SysUserService;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.vo.ApproveVo;
+import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.Query;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,10 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
 
     @Autowired
     DocService docService;
+
+    @Autowired
+    AnnotatorRecordService annotatorRecordService;
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -123,4 +128,26 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
         return record;
     }
 
+    @Override
+    public List<StaticsVo> getStatics() {
+        List<StaticsVo> staticsVos = new ArrayList<>();
+        List<AnnotatorRecordEntity> list = annotatorRecordService.list();
+        Map<Long, List<AnnotatorRecordEntity>> collect = list.stream().collect(Collectors.groupingBy(AnnotatorRecordEntity::getUserId));
+        collect.forEach((k,v)->{
+            QueryWrapper<SysUserEntity> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("user_id",k);
+            SysUserEntity one = sysUserService.getOne(queryWrapper);
+            int i=0;
+//            System.out.println("userId:"+k+" value:"+v);
+            for (AnnotatorRecordEntity recordEntity : v) {
+                if (recordEntity.getAnnotatorTypeCode() == 0)
+                    i++;
+            }
+            StaticsVo staticsVo=new StaticsVo();
+            staticsVo.setName(one.getUsername());
+            staticsVo.setValue(i);
+            staticsVos.add(staticsVo);
+        });
+        return staticsVos;
+    }
 }
