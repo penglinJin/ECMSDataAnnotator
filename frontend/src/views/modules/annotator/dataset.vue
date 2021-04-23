@@ -6,14 +6,13 @@
       width="30%"
       :before-close="handleClose2"
     >
-    <h1>Select a file format</h1>
-    <el-radio v-model="radio" label="1">Plain Text</el-radio>
-    <el-radio v-model="radio" label="2">JSON</el-radio>
-    <br>
-      <span class="span1">{{dataFormat}}</span>
+      <h1>Select a file format</h1>
+      <el-radio v-model="radio" label="1">Plain Text</el-radio>
+      <el-radio v-model="radio" label="2">JSON</el-radio>
+      <br />
+      <span class="span1">{{ dataFormat }}</span>
       <upload v-model="fileUrl" v-if="true"></upload>
     </el-dialog>
-
 
     <el-dialog
       title="Annotate"
@@ -61,12 +60,11 @@
     </el-dialog>
     <div>
       <el-row>
-        <el-button 
-        type="primary"
-        @click="test1()"
-        >Import Dataset</el-button>
-        
-        <el-button type="primary">Export Dataset</el-button>
+        <el-button type="primary" @click="test1()">Import Dataset</el-button>
+
+        <el-button type="primary" @click="exportDataset()"
+          >Export Dataset</el-button
+        >
         <el-button
           v-if="isAuth('annotator:doc:deleteBatch')"
           type="danger"
@@ -227,7 +225,8 @@ export default {
       fileUrl: "",
       input: "",
       radio: "1",
-      dataFormat: 'EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama',
+      dataFormat:
+        "EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama",
       dataForm: {
         content: ""
       }
@@ -249,21 +248,48 @@ export default {
     fileUrl: function(val, oldVal) {
       if (val != null) {
         this.processDataSet(val);
-        this.uploadVisible=false;
+        this.uploadVisible = false;
       }
     },
-    radio: function(val,oldVal){
-      if(val !=null){
-        if(val==1){
-          this.dataFormat='EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama';
-        }else if(val==2){
-          this.dataFormat='{"text": "Terrible customer service.", "labels": ["negative"]} \n {"text": "Really great transaction.", "labels": ["positive"]} \n {"text": "Great price.", "labels": ["positive"]}';
+    radio: function(val, oldVal) {
+      if (val != null) {
+        if (val == 1) {
+          this.dataFormat =
+            "EU rejects German call to boycott British lamb.\n Peter Blackburn \n President Obama";
+        } else if (val == 2) {
+          this.dataFormat =
+            '{"text": "Terrible customer service.", "labels": ["negative"]} \n {"text": "Really great transaction.", "labels": ["positive"]} \n {"text": "Great price.", "labels": ["positive"]}';
         }
       }
     }
   },
 
   methods: {
+    download(data) {
+      if (!data) {
+        return;
+      }
+      let BLOB = new Blob([data]);
+      let url = window.URL.createObjectURL(BLOB);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+
+      link.setAttribute("download", "exportData.json");
+      
+      document.body.appendChild(link);
+      link.click();
+    },
+    exportDataset() {
+      this.$http({
+        url: this.$http.adornUrl("/annotator/srcdoc/downloadFile"),
+        method: "get",
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        console.log(data);
+        this.download(data)
+      });
+    },
     getRole() {
       this.$http({
         url: this.$http.adornUrl(`/sys/user/info/${this.userId}`),
@@ -316,7 +342,7 @@ export default {
       this.annotationVisible = false;
       console.log("about to close");
     },
-     handleClose2() {
+    handleClose2() {
       this.uploadVisible = false;
       console.log("about to close");
     },
@@ -497,8 +523,8 @@ export default {
     current_change: function(currentPage) {
       this.currentPage = currentPage;
     },
-    test1(){
-      this.uploadVisible=true;
+    test1() {
+      this.uploadVisible = true;
     }
   },
 
@@ -520,13 +546,13 @@ export default {
 };
 </script>
 <style scoped>
-  .span1 {
-    display: inline-block;
-    width: 80%;
-    margin: 30px 0px;
-    background-color: #000;
-    color: #fff;
-    padding: 10px;
-    white-space: pre-wrap;
-  }
+.span1 {
+  display: inline-block;
+  width: 80%;
+  margin: 30px 0px;
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+  white-space: pre-wrap;
+}
 </style>
