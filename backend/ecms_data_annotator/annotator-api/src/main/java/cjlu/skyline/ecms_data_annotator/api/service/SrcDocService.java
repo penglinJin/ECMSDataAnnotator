@@ -7,7 +7,6 @@ import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 
-import java.io.File;
 import java.util.Map;
 
 /**
@@ -25,6 +24,6 @@ public interface SrcDocService extends IService<SrcDocEntity> {
 
     R annotate(Long[] labelIds, Long userId, Long docId);
 
-    ResponseEntity<FileSystemResource> downloadFile();
+    ResponseEntity<FileSystemResource> downloadFile(String tmpLocation);
 }
 

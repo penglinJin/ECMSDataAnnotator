@@ -2,20 +2,27 @@ package cjlu.skyline.ecms_data_annotator.api;
 
 
 import cjlu.skyline.ecms_data_annotator.api.dto.AnnotationDto;
+import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
+import cjlu.skyline.ecms_data_annotator.api.entity.SysUserEntity;
+import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
+import cjlu.skyline.ecms_data_annotator.api.service.SrcDocService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
@@ -23,9 +30,12 @@ import java.util.List;
 public class AnnotatorApiApplicationTests {
     public AnnotatorApiApplicationTests(){}
 
+
+    @Autowired
+    SrcDocService srcDocService;
 //    @Autowired
 //    DocService docService;
-//
+
 //    @Autowired
 //    AnnotatorRecordService annotatorRecordService;
 //
@@ -88,6 +98,25 @@ private String tmpLocation;
 
         //file.delete();
 
+//        QueryWrapper<AnnotatorRecordEntity> queryWrapper=new QueryWrapper<>();
+//        List<AnnotatorRecordEntity> list = annotatorRecordService.list();
+//        List<AnnotatorRecordEntity> es=new ArrayList<>();
+//        list.forEach(item->{
+//            String newLabels = item.getNewLabels();
+//            if (!StringUtils.isEmpty(newLabels)){
+//                String[] split = newLabels.split(",");
+//                List<String> collect = Arrays.stream(split).filter(e -> e.equals("11")).collect(Collectors.toList());
+//                if (collect.size()>0){
+//                    es.add(item);
+//                }
+//            }
+//        });
+//
+//        List<AnnotatorRecordEntity> collect = es.stream().sorted(Comparator.comparing(AnnotatorRecordEntity::getCreateTime).reversed()).collect(Collectors.toList());
+//        collect.forEach(System.out::println);
+
+        System.out.println(tmpLocation);
+        srcDocService.downloadFile();
 
     }
 }

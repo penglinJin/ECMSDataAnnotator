@@ -14,6 +14,6 @@ import java.util.Date;
 public class AnnotationDto {
     private Long labelId;
     private String labelName;
-    private Long userId;
     private Date createdAt;
+    private String approver;
 }
