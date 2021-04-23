@@ -1,5 +1,6 @@
 package cjlu.skyline.ecms_data_annotator.api.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,21 +19,28 @@ import java.util.*;
  */
 public class ApiUtils {
 
-    @Value("${tmp.location}")
-    private static String tmpLocation;
 
-    public static File getExportJson() throws IOException {
-        File file=new File(tmpLocation);
-        if (file.exists()){
-            file.delete();
+    public synchronized static File getExportJson(List<JSONObject> jsonObjects,String tmpLocation) {
+        try{
+            File file=new File(tmpLocation);
+            if (file.exists()){
+                file.delete();
+            }
+            FileWriter fileWriter=new FileWriter(file);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            jsonObjects.forEach(e->{
+                String s = e.toJSONString();
+                printWriter.write(s+"\n");
+            });
+            printWriter.close();
+
+            return file;
         }
-        FileWriter fileWriter=new FileWriter(file);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-
-        printWriter.write("12345\n22233");
-        printWriter.close();
-
-        return file;
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String transToString(List<Long> labelList){

@@ -14,9 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -100,6 +100,27 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
 
         convert.setRecords(approvalVos);
         return new PageUtils(convert);
+    }
+
+    @Override
+    public AnnotatorRecordEntity getLabelApproveRecord(Long labelId) {
+        List<AnnotatorRecordEntity> list = this.list();
+        List<AnnotatorRecordEntity> es=new ArrayList<>();
+        list.forEach(item->{
+            String newLabels = item.getNewLabels();
+            if (!StringUtils.isEmpty(newLabels)){
+                String[] split = newLabels.split(",");
+                List<String> collect = Arrays.stream(split).filter(e -> e.equals(String.valueOf(labelId))).collect(Collectors.toList());
+                if (collect.size()>0){
+                    es.add(item);
+                }
+            }
+        });
+
+        List<AnnotatorRecordEntity> collect = es.stream().sorted(Comparator.comparing(AnnotatorRecordEntity::getCreateTime).reversed()).collect(Collectors.toList());
+
+        AnnotatorRecordEntity record = collect.get(0);
+        return record;
     }
 
 }

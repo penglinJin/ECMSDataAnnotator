@@ -1,11 +1,14 @@
 package cjlu.skyline.ecms_data_annotator.api.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,11 +27,15 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
  * @email nsp4289@autuni.ac.nz
  * @date 2021-01-11 15:35:16
  */
+@Log
 @RestController
 @RequestMapping("annotator/srcdoc")
 public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;
+
+    @Value("${tmp.location}")
+    private String tmpLocation;
 
     /**
      * TODO
@@ -45,7 +52,10 @@ public class SrcDocController {
 
     @GetMapping("/downloadFile")
     public ResponseEntity<FileSystemResource> downloadFile() {
-        return srcDocService.downloadFile();
+        ResponseEntity<FileSystemResource> downloadFile = null;
+        downloadFile = srcDocService.downloadFile(tmpLocation);
+
+        return downloadFile;
     }
 
 

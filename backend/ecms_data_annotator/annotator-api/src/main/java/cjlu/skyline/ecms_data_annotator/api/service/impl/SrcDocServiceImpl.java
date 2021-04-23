@@ -9,11 +9,11 @@ import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.utils.NLPUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -58,6 +58,8 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
 
     private static String NEGATIVE="negative";
 
+    @Autowired
+    SysUserService sysUserService;
 
     @Autowired
     DocLabelService docLabelService;
@@ -252,7 +254,7 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
             docEntity.setCreateTime(new Date());
             docEntity.setDocContent(filePath);
 
-            //TODO need to be improved after implement NLP module
+            //need to be improved after implement NLP module
             docService.save(docEntity);
 
             DocStateEntity docStateEntity = new DocStateEntity();
@@ -297,25 +299,46 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     }
 
     /**
-     * form json
+     * form json such as:
+     * {"id": 23, "text": "天津 天津 河东区 117.22 39.12", "annotations": [{"label": 2, "user": 1, "created_at": "2021-01-10T13:20:21.681338Z", "updated_at": "2021-01-10T13:20:21.681386Z"}, {"label": 1, "user": 1, "created_at": "2021-01-10T13:20:38.605696Z", "updated_at": "2021-01-10T13:20:38.605735Z"}], "meta": {}, "annotation_approver": "jinpenglin"}
      * @author 金鹏霖
      * @date 2021/4/13
      * @param
      * @return org.springframework.http.ResponseEntity<org.springframework.core.io.FileSystemResource>
      */
     @Override
-    public ResponseEntity<FileSystemResource> downloadFile() {
+    public ResponseEntity<FileSystemResource> downloadFile(String tmpLocation) {
         //1.collect all docs
         List<DocEntity> docEntities = docService.list();
+        List<JSONObject> jsonObjects=new ArrayList<>();
         for(int i=0;i<docEntities.size();i++){
             DocEntity docEntity=docEntities.get(i);
-            //each doc form to a jsonObject as a line in final json file
+            //2.each doc form to a jsonObject as a line in final json file
             JSONObject object=new JSONObject();
-            
-            AnnotationDto annotationDto=new AnnotationDto();
+            object.put("id",docEntity.getDocId());
+            object.put("text",docEntity.getDocContent());
+            JSONArray jsonArray=new JSONArray();
 
+            QueryWrapper<DocLabelEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("doc_id",docEntity.getDocId());
+            List<DocLabelEntity> list = docLabelService.list(queryWrapper);
+            list.forEach(item->{
+                AnnotationDto annotationDto=new AnnotationDto();
+                annotationDto.setLabelId(item.getLabelId());
+                LabelInfoEntity label = labelInfoService.getById(item.getLabelId());
+                annotationDto.setLabelName(label.getLabelContent());
+                AnnotatorRecordEntity record = annotatorRecordService.getLabelApproveRecord(item.getLabelId());
+                QueryWrapper<SysUserEntity> queryWrapper1=new QueryWrapper<>();
+                queryWrapper1.eq("user_id",record.getUserId());
+                SysUserEntity one = sysUserService.getOne(queryWrapper1);
+                annotationDto.setApprover(one.getUsername());
+                annotationDto.setCreatedAt(record.getCreateTime());
+                jsonArray.add(annotationDto);
+            });
+            object.put("annotations",jsonArray);
+            jsonObjects.add(object);
         }
-        return null;
+        return export(ApiUtils.getExportJson(jsonObjects,tmpLocation));
     }
 
     public ResponseEntity<FileSystemResource> export(File file) {
