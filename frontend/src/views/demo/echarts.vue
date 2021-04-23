@@ -243,7 +243,7 @@
         var option = {
           backgroundColor: '#2c343c',
           title: {
-            text: 'Customized Pie',
+            text: 'Contribuution Pie',
             left: 'center',
             top: 20,
             textStyle: {
@@ -264,16 +264,16 @@
           },
           series: [
             {
-              name: '访问来源',
+              name: '贡献来源', //访问来源
               type: 'pie',
               radius: '55%',
               center: ['50%', '50%'],
               data: [
-                { value: 335, name: '直接访问' },
-                { value: 310, name: '邮件营销' },
-                { value: 274, name: '联盟广告' },
-                { value: 235, name: '视频广告' },
-                { value: 400, name: '搜索引擎' }
+                { value: 1, name: 'Jin' },
+                { value: 2, name: 'Cao' },
+                { value: 2, name: 'Ni' },
+                { value: 4, name: 'ABC' },
+                { value: 1, name: 'QWE' }
               ].sort(function (a, b) { return a.value - b.value }),
               roseType: 'radius',
               label: {

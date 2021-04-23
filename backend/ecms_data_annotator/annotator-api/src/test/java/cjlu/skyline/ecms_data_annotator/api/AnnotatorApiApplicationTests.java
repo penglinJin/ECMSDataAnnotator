@@ -2,13 +2,17 @@ package cjlu.skyline.ecms_data_annotator.api;
 
 
 import cjlu.skyline.ecms_data_annotator.api.dto.AnnotationDto;
+import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
+import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,6 +20,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
@@ -26,8 +32,8 @@ public class AnnotatorApiApplicationTests {
 //    @Autowired
 //    DocService docService;
 //
-//    @Autowired
-//    AnnotatorRecordService annotatorRecordService;
+    @Autowired
+    AnnotatorRecordService annotatorRecordService;
 //
 //    @Autowired
 //    LabelInfoService labelInfoService;
@@ -40,6 +46,28 @@ private String tmpLocation;
     @Test
     public void testAn() throws IOException {
 
+        List<AnnotatorRecordEntity> list = annotatorRecordService.list();
+        Map<Long, List<AnnotatorRecordEntity>> collect = list.stream().collect(Collectors.groupingBy(AnnotatorRecordEntity::getUserId));
+        collect.forEach((k,v)->{
+            int i=0;
+            System.out.println("userId:"+k+" value:"+v);
+            for (AnnotatorRecordEntity recordEntity : v) {
+                if (recordEntity.getAnnotatorTypeCode() == 0)
+                    i++;
+            }
+            System.out.println(k+" "+i);
+        });
+
+
+//        for (AnnotatorRecordEntity annotatorRecordEntity : list) {
+//            if (annotatorRecordEntity.getAnnotatorTypeCode() == 0){
+//                Long userId = annotatorRecordEntity.getUserId();
+//                i++;
+//                System.out.println(userId+ ":"+i);
+//
+//            }
+//
+//        }
 //        Long id=Long.valueOf("1");
 //        SysUserEntity user = sysUserService.getOne(new QueryWrapper<SysUserEntity>().eq("user_id", id));
 //        System.out.println(user);

@@ -83,4 +83,12 @@ public class AnnotatorRecordController {
         return R.ok();
     }
 
+    /**
+     *  注释数量统计
+     */
+    @GetMapping("/")
+    public R annotationNum(){
+
+    }
+
 }
