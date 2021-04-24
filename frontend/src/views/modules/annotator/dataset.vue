@@ -35,10 +35,12 @@
             v-model="labelForm.labelContents"
             placeholder="Please Select"
             @change="changeSelectVal"
+            @keyup="test12"
             multiple
           >
             <el-option
               v-for="item in labelList"
+              :style="{color: item.textColor}"
               :key="item.labelId"
               :label="item.labelContent"
               :value="item.labelContent"
@@ -265,6 +267,11 @@ export default {
   },
 
   methods: {
+    test12(e){
+      console.log('eeeeeeeeeeeeeeee', e)
+      
+    }
+    ,
     download(data) {
       if (!data) {
         return;
@@ -394,6 +401,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.labelList = data.page.list;
+            console.log("1233333333333",this.labelList);
           }
           this.docContent = val.docContent;
           this.tempData = val;
