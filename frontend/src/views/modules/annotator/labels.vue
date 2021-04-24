@@ -28,7 +28,7 @@
             <el-form-item label="shortKey" prop="prefixKey">
               <el-dropdown @command="handleCommand">
                 <el-input v-model="addForm.prefixKey"></el-input>
-                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-menu class="shortKeyItems" slot="dropdown">
                   <el-dropdown-item command="0">0</el-dropdown-item>
                   <el-dropdown-item command="1">1</el-dropdown-item>
                   <el-dropdown-item command="2">2</el-dropdown-item>
@@ -39,7 +39,7 @@
                   <el-dropdown-item command="7">7</el-dropdown-item>
                   <el-dropdown-item command="8">8</el-dropdown-item>
                   <el-dropdown-item command="9">9</el-dropdown-item>
-                  <!-- <el-dropdown-item command="a">a</el-dropdown-item>
+                  <el-dropdown-item command="a">a</el-dropdown-item>
                   <el-dropdown-item command="b">b</el-dropdown-item>
                   <el-dropdown-item command="c">c</el-dropdown-item>
                   <el-dropdown-item command="d">d</el-dropdown-item>
@@ -64,7 +64,7 @@
                   <el-dropdown-item command="w">w</el-dropdown-item>
                   <el-dropdown-item command="x">x</el-dropdown-item>
                   <el-dropdown-item command="y">y</el-dropdown-item>
-                  <el-dropdown-item command="z">z</el-dropdown-item> -->
+                  <el-dropdown-item command="z">z</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-form-item>
@@ -405,4 +405,9 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+  .shortKeyItems {
+    height: 400px;
+    overflow: scroll;
+  }
+</style>
