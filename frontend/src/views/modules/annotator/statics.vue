@@ -61,7 +61,7 @@ option: {
           data: [
             { value: 1, name: 'Jin' },
             { value: 2, name: 'Cao' },
-            { value: 2, name: 'Ni' },
+            { value: 5, name: 'Ni' },
             { value: 4, name: 'ABC' },
             { value: 1, name: 'QWE' }
           ].sort(function (a, b) { return a.value - b.value }),
@@ -134,32 +134,35 @@ methods: {
           this.chartPie.resize()
         })
       },
+    //获取数据列表
+       getStatics() {
+        this.$http({
+          url: this.$http.adornUrl("/annotator/annotatorrecord/numStatics"),
+          method: "get",
+          
+        }).then(({ data }) => {
+          console.log(data, 'data-------------');
+          // if (data && data.code === 0) {
+          //   this.option.series.data.name = data.name;
+          //   this.option.series.data.value = data.value;
+          // } else {
+          //   this.dataList = [];
+          //   this.totalPage = 0;
+          // }
+          this.option.series[0].data = data.numStatics
+          console.log('option------', this.option)
+          this.initChartPie()
+          // this.dataListLoading = false;
+
+        });
+       }
     
-    // 获取数据列表
-      //  getDataList() {
-        
-      //   this.$http({
-      //     url: this.$http.adornUrl("/annotator/annotatorrecord/approvalList"),
-      //     method: "get",
-      //     params: this.$http.adornParams({
-      //       page: this.pageIndex,
-      //       limit: this.pageSize,
-      //       content: this.dataForm.content
-      //     })
-      //   }).then(({ data }) => {
-      //     if (data && data.code === 0) {
-      //       this.dataList = data.page.list;
-      //       this.totalPage = data.page.totalCount;
-      //       console.log("00datakist00", this.dataList);
-      //     } else {
-      //       this.dataList = [];
-      //       this.totalPage = 0;
-      //     }
-      //     this.dataListLoading = false;
-      //   });
 },
 //声明周期 - 创建完成（可以访问当前this实例）
-created() {},
+created() {
+  this.getStatics()
+
+},
 
 
 //声明周期 - 挂载完成（可以访问DOM元素）
@@ -175,8 +178,9 @@ beforeDestroy() {}, //生命周期 - 销毁之前
 destroyed() {}, //生命周期 - 销毁完成
 
 
-};
+}
 </script>
+
 <style>
   .el-dropdown-link {
     cursor: pointer;
@@ -188,5 +192,4 @@ destroyed() {}, //生命周期 - 销毁完成
   .chart-box {
     min-height: 400px;
   }
-  
 </style>
