@@ -88,6 +88,19 @@ public class AnnotatorRecordController {
     }
 
     /**
+     * 统计标签完成情况
+     * @author 金鹏霖
+     * @date 2021/5/4
+     * @param
+     * @return cjlu.skyline.ecms_data_annotator.common.utils.R
+     */
+    @GetMapping("/completeSituation")
+    public R completeSituation(){
+        List<StaticsVo> statics=annotatorRecordService.getCompleteSituation();
+        return R.ok().put("completeSituation",statics);
+    }
+
+    /**
      *  注释数量统计
      */
     @GetMapping("/numStatics")
