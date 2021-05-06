@@ -13,6 +13,11 @@
           <div id="J_chartPieBox2" class="chart-box"></div>
         </el-card>
       </el-col>
+      <el-col :span="24">
+        <el-card>
+          <div id="J_chartBarBox" class="chart-box"></div>
+        </el-card>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -159,7 +164,43 @@ export default {
             ]
           }
         ]
-      }
+      },
+      option3: {
+        title: {
+            text: 'Annotated Lables',
+            
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        // legend: {
+        //     data: ['2011年', '2012年']
+        // },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']  //标签名
+        },
+        series: [
+            {
+                name: 'Sum',
+                type: 'bar',
+                data: [18203, 23489, 29034, 104970, 131744, 630230] //被注释标签数量
+            }
+            ]
+          }
     };
   },
   //计算属性 类似于data概念
@@ -204,7 +245,35 @@ export default {
         this.chartPie2.resize();
       });
     },
-
+    //柱状图
+    initChartBar(){
+      this.chartBar = echarts.init(document.getElementById('J_chartBarBox'))
+        this.chartBar.setOption(this.option3)
+        window.addEventListener('resize', () => {
+          this.chartBar.resize()
+        })
+    },
+    //获取被注释标签数据
+    getTagsSituation() {
+      this.$http({
+        url: this.$http.adornUrl("/annotator/annotatorrecord/labelStatics"),
+        method: "get"
+      }).then(({ data }) => {
+        console.log(data, "data-------------");
+        
+        let names=[]
+        let values=[]
+        for(let e in data.labelStatics){
+          names.push(data.labelStatics[e].name)
+          values.push(data.labelStatics[e].value)
+        }
+        this.option3.yAxis.data = names
+        this.option3.series[0].data = values
+        console.log("option3------", this.option3);
+        this.initChartBar();
+        // this.dataListLoading = false;
+      });
+    },
     //获取注解完成情况
     getCompletionSituation() {
       this.$http({
@@ -243,11 +312,13 @@ export default {
   created() {
     this.getStatics();
     this.getCompletionSituation();
+    this.getTagsSituation();
   },
 
   //声明周期 - 挂载完成（可以访问DOM元素）
   mounted() {
     this.initChartPie();
+    this.initChartBar();
   },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前

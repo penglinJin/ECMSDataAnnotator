@@ -25,6 +25,10 @@ public interface AnnotatorRecordService extends IService<AnnotatorRecordEntity> 
 
     List<StaticsVo> getStatics();
 
+    List<StaticsVo> getTagsStatics();
+
     List<StaticsVo> getCompleteSituation();
+
+
 }
 

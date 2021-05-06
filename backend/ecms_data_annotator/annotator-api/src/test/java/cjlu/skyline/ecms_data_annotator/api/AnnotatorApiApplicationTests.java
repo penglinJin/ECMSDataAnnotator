@@ -3,8 +3,11 @@ package cjlu.skyline.ecms_data_annotator.api;
 
 import cjlu.skyline.ecms_data_annotator.api.dto.AnnotationDto;
 import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
+import cjlu.skyline.ecms_data_annotator.api.entity.LabelInfoEntity;
 import cjlu.skyline.ecms_data_annotator.api.entity.SysUserEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
+import cjlu.skyline.ecms_data_annotator.api.service.DocService;
+import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
 import cjlu.skyline.ecms_data_annotator.api.service.SrcDocService;
 import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import com.alibaba.fastjson.JSONArray;
@@ -31,27 +34,31 @@ import java.util.stream.Collectors;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AnnotatorApiApplicationTests {
-    public AnnotatorApiApplicationTests(){}
+    public AnnotatorApiApplicationTests() {
+    }
 
 
 //    @Autowired
 //    SrcDocService srcDocService;
 //    @Autowired
 //    DocService docService;
-
+//
 //    @Autowired
 //    AnnotatorRecordService annotatorRecordService;
 //
 //    @Autowired
 //    LabelInfoService labelInfoService;
-//
+
 //    @Autowired
 //    SysUserService sysUserService;
-@Value("${tmp.location}")
-private String tmpLocation;
+    @Value("${tmp.location}")
+    private String tmpLocation;
 
     @Test
     public void testAn() throws IOException {
+
+    }
+
 
 //        Long id=Long.valueOf("1");
 //        SysUserEntity user = sysUserService.getOne(new QueryWrapper<SysUserEntity>().eq("user_id", id));
@@ -126,4 +133,4 @@ private String tmpLocation;
 //        completeSituation.forEach(System.out::println);
 
     }
-}
+

@@ -1,11 +1,7 @@
 package cjlu.skyline.ecms_data_annotator.api.service.impl;
 
-import cjlu.skyline.ecms_data_annotator.api.entity.DocEntity;
-import cjlu.skyline.ecms_data_annotator.api.entity.LabelInfoEntity;
-import cjlu.skyline.ecms_data_annotator.api.entity.SysUserEntity;
-import cjlu.skyline.ecms_data_annotator.api.service.DocService;
-import cjlu.skyline.ecms_data_annotator.api.service.LabelInfoService;
-import cjlu.skyline.ecms_data_annotator.api.service.SysUserService;
+import cjlu.skyline.ecms_data_annotator.api.entity.*;
+import cjlu.skyline.ecms_data_annotator.api.service.*;
 import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import cjlu.skyline.ecms_data_annotator.api.vo.ApproveVo;
 import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
@@ -25,8 +21,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 
 import cjlu.skyline.ecms_data_annotator.api.dao.AnnotatorRecordDao;
-import cjlu.skyline.ecms_data_annotator.api.entity.AnnotatorRecordEntity;
-import cjlu.skyline.ecms_data_annotator.api.service.AnnotatorRecordService;
 import org.springframework.util.StringUtils;
 
 
@@ -44,6 +38,9 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
 
     @Autowired
     AnnotatorRecordService annotatorRecordService;
+
+    @Autowired
+    DocLabelService docLabelService;
 
 
     @Override
@@ -128,6 +125,23 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
         AnnotatorRecordEntity record = collect.get(0);
         return record;
     }
+
+    @Override
+    public List<StaticsVo> getTagsStatics() {
+        List<StaticsVo> staticsVos = new ArrayList<>();
+        List<LabelInfoEntity> list = labelInfoService.list();
+        list.forEach(e->{
+            Long labelId = e.getLabelId();
+            List<DocLabelEntity> labels = docLabelService.list(new QueryWrapper<DocLabelEntity>().eq("label_id", labelId));
+            StaticsVo staticsVo=new StaticsVo();
+            staticsVo.setName(e.getLabelContent());
+            staticsVo.setValue(labels.size());
+            staticsVos.add(staticsVo);
+        });
+
+        return staticsVos;
+    }
+
 
     @Override
     public List<StaticsVo> getStatics() {

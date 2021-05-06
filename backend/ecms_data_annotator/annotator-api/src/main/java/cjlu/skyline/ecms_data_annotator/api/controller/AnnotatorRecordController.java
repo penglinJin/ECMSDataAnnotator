@@ -110,4 +110,14 @@ public class AnnotatorRecordController {
         return R.ok().put("numStatics",statics);
     }
 
+
+    /**
+     *  被注释标签数量统计
+     */
+    @GetMapping("/labelStatics")
+    public R labelStatics(){
+        List<StaticsVo> labelStatics = annotatorRecordService.getTagsStatics();
+
+        return R.ok().put("labelStatics",labelStatics);
+    }
 }
