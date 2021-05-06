@@ -272,11 +272,17 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
     }
 
     @Override
-    public R annotate(Long[] labelIds, Long userId, Long docId) {
+    public R annotate(Long[] labelIds, Long userId, Long docId,String htmlContent) {
         List<Long> news = Arrays.asList(labelIds);
         String newLabels = ApiUtils.transToString(news);
         List<Long> olds = labelInfoService.getOldLabels(docId);
         String oldLabels = ApiUtils.transToString(olds);
+
+        if (!StringUtils.isEmpty(htmlContent)){
+            DocEntity doc = docService.getOne(new QueryWrapper<DocEntity>().eq("doc_id", docId));
+            doc.setHtmlContent(htmlContent);
+            docService.save(doc);
+        }
 
         AnnotatorRecordEntity annotationRecord = new AnnotatorRecordEntity();
         annotationRecord.setAnnotatorTypeCode(0);

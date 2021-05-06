@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +29,13 @@ public class DocController {
     private DocService docService;
 
 
+    @ApiOperation("Reject single annotation")
     @PostMapping("reject")
     public R reject(@RequestParam("annotateRecordId") Long annotateRecordId,@RequestParam("userId") Long userId){
         return docService.reject(annotateRecordId,userId);
     }
 
+    @ApiOperation("Reject multiple annotations")
     @PostMapping("rejectBatch")
     public R rejectBatch(@RequestBody Long[] annotateRecordIds,@RequestParam("userId") Long userId){
         if (annotateRecordIds!=null){
@@ -45,6 +48,7 @@ public class DocController {
         }
     }
 
+    @ApiOperation("Approve multiple annotations")
     @PostMapping("/approveBatch")
     public R approveBatch(@RequestBody Long[] annotateRecordIds,@RequestParam("userId") Long userId){
         if (annotateRecordIds!=null){
@@ -57,17 +61,20 @@ public class DocController {
         }
     }
 
+    @ApiOperation("Approve single annotation")
     @PostMapping("/approve")
     public R approve(@RequestParam("annotateRecordId") Long annotateRecordId,@RequestParam("userId") Long userId){
         return docService.approve(annotateRecordId,userId);
     }
 
+    @ApiOperation("Get docs which needed to be approved")
     @GetMapping("/approvalList")
     public R approvalList(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryApprovalPage(params);
         return R.ok().put("page", page);
     }
 
+    @ApiOperation("")
     @GetMapping("/preList")
     public R preList(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryPrePage(params);

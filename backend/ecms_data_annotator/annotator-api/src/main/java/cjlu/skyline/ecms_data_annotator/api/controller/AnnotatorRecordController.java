@@ -1,14 +1,13 @@
 package cjlu.skyline.ecms_data_annotator.api.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +29,7 @@ public class AnnotatorRecordController {
     @Autowired
     private AnnotatorRecordService annotatorRecordService;
 
+    @ApiOperation("Get those annotations needed to be approved")
     @GetMapping("/approvalList")
     public R approvalList(@RequestParam Map<String, Object> params){
         PageUtils page = annotatorRecordService.queryApprovalPage(params);
@@ -39,7 +39,7 @@ public class AnnotatorRecordController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = annotatorRecordService.queryPage(params);
 
@@ -50,7 +50,7 @@ public class AnnotatorRecordController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{recordId}")
+    @GetMapping("/info/{recordId}")
     public R info(@PathVariable("recordId") Long recordId){
 		AnnotatorRecordEntity annotatorRecord = annotatorRecordService.getById(recordId);
 
@@ -60,7 +60,7 @@ public class AnnotatorRecordController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public R save(@RequestBody AnnotatorRecordEntity annotatorRecord){
 		annotatorRecordService.save(annotatorRecord);
 
@@ -70,7 +70,7 @@ public class AnnotatorRecordController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody AnnotatorRecordEntity annotatorRecord){
 		annotatorRecordService.updateById(annotatorRecord);
 
@@ -80,7 +80,7 @@ public class AnnotatorRecordController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] recordIds){
 		annotatorRecordService.removeByIds(Arrays.asList(recordIds));
 
@@ -94,6 +94,7 @@ public class AnnotatorRecordController {
      * @param
      * @return cjlu.skyline.ecms_data_annotator.common.utils.R
      */
+    @ApiOperation("Get the annotation completion situation for all docs")
     @GetMapping("/completeSituation")
     public R completeSituation(){
         List<StaticsVo> statics=annotatorRecordService.getCompleteSituation();
@@ -103,6 +104,7 @@ public class AnnotatorRecordController {
     /**
      *  注释数量统计
      */
+    @ApiOperation("Get count statics for each user's annotation action")
     @GetMapping("/numStatics")
     public R annotationNum(){
         List<StaticsVo> statics = annotatorRecordService.getStatics();
