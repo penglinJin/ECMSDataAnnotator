@@ -13,6 +13,7 @@
         <result property="createTime" column="create_time"/>
         <result property="createUserId" column="create_user_id"/>
         <result property="nlpLabel" column="nlp_label"/>
+        <result property="htmlContent" column="html_content"/>
     </resultMap>
 
 

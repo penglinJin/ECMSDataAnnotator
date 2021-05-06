@@ -22,7 +22,7 @@ public interface SrcDocService extends IService<SrcDocEntity> {
 
     R processDataset(String filePath,Long userId);
 
-    R annotate(Long[] labelIds, Long userId, Long docId);
+    R annotate(Long[] labelIds, Long userId, Long docId,String htmlContent);
 
     ResponseEntity<FileSystemResource> downloadFile(String tmpLocation);
 }

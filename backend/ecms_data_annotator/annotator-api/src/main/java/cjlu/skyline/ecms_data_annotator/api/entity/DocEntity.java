@@ -56,4 +56,6 @@ public class DocEntity implements Serializable {
 
 	private String nlpLabel;
 
+	private String htmlContent;
+
 }
