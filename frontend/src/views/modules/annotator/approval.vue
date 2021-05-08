@@ -100,7 +100,7 @@
           header-align="center"
           align="center"
           width="150"
-          label="操作"
+          label="Operation"
         >
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="approve(scope.row)"

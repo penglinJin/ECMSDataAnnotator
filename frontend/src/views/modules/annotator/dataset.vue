@@ -162,7 +162,7 @@
           header-align="center"
           align="center"
           width="150"
-          label="操作"
+          label="Operation"
         >
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="annotate(scope.row)"
@@ -325,7 +325,8 @@ export default {
         method: "post",
         params: this.$http.adornParams({
           userId: this.userId,
-          docId: this.tempData.docId
+          docId: this.tempData.docId,
+          htmlContent: ""
         }),
         data: this.$http.adornData(labelIds, false)
       }).then(({ data }) => {

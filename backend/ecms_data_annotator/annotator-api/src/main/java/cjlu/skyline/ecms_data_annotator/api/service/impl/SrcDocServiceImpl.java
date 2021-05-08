@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -281,7 +280,7 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
         if (!StringUtils.isEmpty(htmlContent)){
             DocEntity doc = docService.getOne(new QueryWrapper<DocEntity>().eq("doc_id", docId));
             doc.setHtmlContent(htmlContent);
-            docService.save(doc);
+            docService.update(doc,new UpdateWrapper<DocEntity>().eq("doc_id",docId));
         }
 
         AnnotatorRecordEntity annotationRecord = new AnnotatorRecordEntity();
