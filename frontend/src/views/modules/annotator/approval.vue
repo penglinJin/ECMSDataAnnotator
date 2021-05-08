@@ -52,12 +52,15 @@
         >
         </el-table-column>
         <el-table-column
-          prop="docContent"
+          prop="htmlContent"
           header-align="center"
           align="center"
           width="400"
           label="Text"
         >
+          <template slot-scope="scope">
+            <div class="textContent" v-html="scope.row.htmlContent"></div>
+          </template>
         </el-table-column>
         <el-table-column label="img" align="center" height="10px" prop="docContent" width="300">
           <template slot-scope="scope">
@@ -280,6 +283,7 @@ export default {
           content: this.dataForm.content
         })
       }).then(({ data }) => {
+        console.log('data-----------------------', data)
         if (data && data.code === 0) {
           this.dataList = data.page.list;
           this.totalPage = data.page.totalCount;
@@ -333,10 +337,29 @@ export default {
   beforeDestroy() {},
   destroyed() {},
   activated() {
-    console.log("sssssssssssssssssssssssssssssssss");
     this.getDataList();
     this.getUserInfo();
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+  .textContent {
+    display: inline-block;
+    font-size: 20px;
+    line-height: 40px;
+  }
+  .textContent >>> .selectedSpan {
+    display: inline-block;
+    padding: 0px 10px 0px 10px;
+    border-radius: 6px;
+    line-height: 30px;
+    color: white !important;
+  }
+  .textContent >>> .selectedSpan i {
+    font-size: 10px;
+    border-radius: 6px;
+    vertical-align: middle;
+    color: rgb(0, 0, 0, 0.2);
+    /* background-color: white; */
+  }
+</style>
