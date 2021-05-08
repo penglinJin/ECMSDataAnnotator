@@ -24,5 +24,11 @@ public interface AnnotatorRecordService extends IService<AnnotatorRecordEntity> 
     AnnotatorRecordEntity getLabelApproveRecord(Long labelId);
 
     List<StaticsVo> getStatics();
+
+    List<StaticsVo> getTagsStatics();
+
+    List<StaticsVo> getCompleteSituation();
+
+
 }
 

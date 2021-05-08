@@ -22,4 +22,6 @@ public class ApproveVo extends AnnotatorRecordEntity {
 
     private String docContent;
 
+    private String htmlContent;
+
 }

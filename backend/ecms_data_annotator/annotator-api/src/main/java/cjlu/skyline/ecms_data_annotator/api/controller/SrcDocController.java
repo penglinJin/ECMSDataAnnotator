@@ -38,7 +38,6 @@ public class SrcDocController {
     private String tmpLocation;
 
     /**
-     * TODO
      *
      * @param
      * @return cjlu.skyline.ecms_data_annotator.common.utils.R
@@ -65,11 +64,11 @@ public class SrcDocController {
     }
 
     @PostMapping("annotate")
-    public R annotate(@RequestBody Long[] labelIds, @RequestParam("userId") Long userId, @RequestParam("docId") Long docId) {
+    public R annotate(@RequestBody Long[] labelIds, @RequestParam("userId") Long userId, @RequestParam("docId") Long docId,@RequestParam("htmlContent") String htmlContent) {
         if (labelIds == null || userId == null || docId == null) {
             return R.error("null error");
         }
-        return srcDocService.annotate(labelIds, userId, docId);
+        return srcDocService.annotate(labelIds, userId, docId,htmlContent);
     }
 
     @PostMapping("/process")

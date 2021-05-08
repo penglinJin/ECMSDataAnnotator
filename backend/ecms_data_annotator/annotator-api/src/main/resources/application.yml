@@ -10,5 +10,5 @@ spring:
 server:
   port: 7000
 
-tmp:
-  location: E:\tmp\exportData.json
+#tmp:
+#  location: E:\tmp\exportData.json
