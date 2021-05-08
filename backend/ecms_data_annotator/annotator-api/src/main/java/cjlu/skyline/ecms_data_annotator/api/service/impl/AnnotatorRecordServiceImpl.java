@@ -74,6 +74,7 @@ public class AnnotatorRecordServiceImpl extends ServiceImpl<AnnotatorRecordDao, 
             approveVo.setCreateUserName(user.getUsername());
             DocEntity docEntity = docService.getOne(new QueryWrapper<DocEntity>().eq("doc_id", i.getDocId()));
             approveVo.setDocContent(docEntity.getDocContent());
+            approveVo.setHtmlContent(docEntity.getHtmlContent());
 
             if (!StringUtils.isEmpty(i.getOldLabels())){
                 StringBuilder sb=new StringBuilder();
