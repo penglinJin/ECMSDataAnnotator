@@ -298,7 +298,7 @@ export default {
       // console.log('labelList --> ', this.labelList)
       // console.log('labelForm --> ', this.labelForm)
       for(let i in this.labelList) {
-        if(event.key === this.labelList[i].labelContent[0]) {
+        if(event.key === this.labelList[i].prefixKey) {
           let exist = false
           for(let j in this.labelForm.labelContents) {
             if(this.labelForm.labelContents[j] === this.labelList[i].labelContent) {
