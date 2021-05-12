@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="日志列表"
+    title="log list"
     :close-on-click-modal="false"
     :visible.sync="visible"
     width="75%">
@@ -9,7 +9,7 @@
         <el-input v-model="dataForm.id" placeholder="任务ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">query</el-button>
       </el-form-item>
     </el-form>
     <el-table

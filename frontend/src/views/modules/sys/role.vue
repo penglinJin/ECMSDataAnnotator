@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.roleName" placeholder="RoleName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">query</el-button>
         <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
         <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">batch delete</el-button>
       </el-form-item>
