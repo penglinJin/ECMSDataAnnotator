@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,8 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
  * @email nsp4289@autuni.ac.nz
  * @date 2021-01-11 15:35:15
  */
+@Api("Manage Labels information")
+
 @RestController
 @RequestMapping("annotator/labelinfo")
 public class LabelInfoController {
@@ -30,11 +35,13 @@ public class LabelInfoController {
 
     /**
      * get the old labels of this doc
-     * @author 金鹏霖
+     * @author
      * @date 2021/3/9
      * @param docId
      * @return cjlu.skyline.ecms_data_annotator.common.utils.R
      */
+    @ApiOperation("Get the old labels of this doc")
+    @ApiImplicitParam(name = "docId", value = "document ID")
     @GetMapping("/oldLabels")
     public R getOldLabels(@RequestParam("docId") Long docId){
         List<Long> oldLabels = labelInfoService.getOldLabels(docId);
@@ -44,7 +51,9 @@ public class LabelInfoController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("Get Labels information list")
+    @ApiImplicitParam(name = "params", value = "Labels information list")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = labelInfoService.queryPage(params);
 
@@ -55,7 +64,8 @@ public class LabelInfoController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{labelId}")
+    @ApiOperation("Get label information by label ID")
+    @GetMapping("/info/{labelId}")
     public R info(@PathVariable("labelId") Long labelId){
 		LabelInfoEntity labelInfo = labelInfoService.getById(labelId);
 
@@ -65,7 +75,9 @@ public class LabelInfoController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save label information")
+    @ApiImplicitParam(name = "labelInfo", value = "label information")
+    @PostMapping("/save")
     public R save(@RequestBody LabelInfoEntity labelInfo){
 		labelInfoService.save(labelInfo);
 
@@ -75,7 +87,9 @@ public class LabelInfoController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @ApiOperation("Update label information")
+    @ApiImplicitParam(name = "labelInfo", value = "label information")
+    @PostMapping("/update")
     public R update(@RequestBody LabelInfoEntity labelInfo){
 		labelInfoService.updateById(labelInfo);
 
@@ -85,7 +99,9 @@ public class LabelInfoController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @ApiOperation("Delete label information")
+    @ApiImplicitParam(name = "labelIds", value = "label IDs")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] labelIds){
 		labelInfoService.removeByIds(Arrays.asList(labelIds));
 
@@ -95,7 +111,9 @@ public class LabelInfoController {
     /**
      * 删除
      */
-    @RequestMapping("/deleteBatch")
+    @ApiOperation("Delete labels information")
+    @ApiImplicitParam(name = "labelIds", value = "label IDs")
+    @PostMapping("/deleteBatch")
     public R deleteBatch(@RequestBody Long[] labelIds){
         labelInfoService.removeByIds(Arrays.asList(labelIds));
 

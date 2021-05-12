@@ -5,12 +5,11 @@ import java.util.Map;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.DocLabelEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.DocLabelService;
@@ -34,7 +33,9 @@ public class DocLabelController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("Get document's annotations list")
+    @ApiImplicitParam(name = "params", value = "documents' annotations")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = docLabelService.queryPage(params);
 
@@ -45,7 +46,9 @@ public class DocLabelController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{docLabelId}")
+    @ApiOperation("Get document annotations by ID")
+    @ApiImplicitParam(name = "docLabelId", value = "document annotation's ID")
+    @GetMapping("/info/{docLabelId}")
     public R info(@PathVariable("docLabelId") Long docLabelId){
 		DocLabelEntity docLabel = docLabelService.getById(docLabelId);
 
@@ -55,7 +58,9 @@ public class DocLabelController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save new document labels")
+    @ApiImplicitParam(name = "docLabel",value = "document label")
+    @PostMapping("/save")
     public R save(@RequestBody DocLabelEntity docLabel){
 		docLabelService.save(docLabel);
 
@@ -65,7 +70,9 @@ public class DocLabelController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @ApiOperation("Update document labels")
+    @ApiImplicitParam(name = "docLabel",value = "document label")
+    @PostMapping("/update")
     public R update(@RequestBody DocLabelEntity docLabel){
 		docLabelService.updateById(docLabel);
 
@@ -75,7 +82,9 @@ public class DocLabelController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @ApiOperation("Delete document labels")
+    @ApiImplicitParam(name = "docLabelIds",value = "document label IDs")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] docLabelIds){
 		docLabelService.removeByIds(Arrays.asList(docLabelIds));
 

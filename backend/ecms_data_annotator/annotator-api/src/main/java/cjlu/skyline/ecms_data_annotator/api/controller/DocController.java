@@ -5,7 +5,7 @@ import java.util.Map;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +22,8 @@ import cjlu.skyline.ecms_data_annotator.api.service.DocService;
  * @email nsp4289@autuni.ac.nz
  * @date 2021-01-11 15:35:16
  */
+@Api("Manage documents annotation actions")
+
 @RestController
 @RequestMapping("annotator/doc")
 public class DocController {
@@ -31,7 +33,7 @@ public class DocController {
 
     @ApiOperation("Reject single annotation")
     @PostMapping("reject")
-    public R reject(@RequestParam("annotateRecordId") Long annotateRecordId,@RequestParam("userId") Long userId){
+    public R reject(@RequestParam("annotateRecordId") Long annotateRecordId, @RequestParam("userId") Long userId){
         return docService.reject(annotateRecordId,userId);
     }
 
@@ -67,7 +69,8 @@ public class DocController {
         return docService.approve(annotateRecordId,userId);
     }
 
-    @ApiOperation("Get docs which needed to be approved")
+    @ApiOperation("Get documents  needed to be approved")
+    @ApiImplicitParam(name = "params", value = "documents  needed to be approved")
     @GetMapping("/approvalList")
     public R approvalList(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryApprovalPage(params);
@@ -85,6 +88,7 @@ public class DocController {
     /**
      * 列表
      */
+    @ApiOperation("Get All documents")
     @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = docService.queryPage(params);
@@ -96,7 +100,9 @@ public class DocController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{docId}")
+    @ApiOperation("Get a document information by ID")
+    @ApiImplicitParam(name = "docId",value = "Document ID")
+    @GetMapping("/info/{docId}")
     public R info(@PathVariable("docId") Long docId){
 		DocEntity doc = docService.getById(docId);
 
@@ -106,7 +112,9 @@ public class DocController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save Document")
+    @ApiImplicitParam(name = "doc",value = "Document")
+    @PostMapping("/save")
     public R save(@RequestBody DocEntity doc){
 		docService.save(doc);
 
@@ -116,7 +124,10 @@ public class DocController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
+    @ApiOperation("Update document")
+    @ApiImplicitParam(name = "doc",value = "Document")
+
     public R update(@RequestBody DocEntity doc){
 		docService.updateById(doc);
 
@@ -126,6 +137,8 @@ public class DocController {
     /**
      * 删除
      */
+    @ApiOperation("Delete documents")
+    @ApiImplicitParam(name = "docIds", value = "Documents IDs")
     @PostMapping("/delete")
     public R delete(@RequestBody Long[] docIds){
 		docService.removeByIds(Arrays.asList(docIds));

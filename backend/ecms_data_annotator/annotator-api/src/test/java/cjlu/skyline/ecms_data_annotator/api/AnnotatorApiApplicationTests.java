@@ -13,6 +13,12 @@ import cjlu.skyline.ecms_data_annotator.api.vo.StaticsVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.swagger2markup.GroupBy;
+import io.github.swagger2markup.Language;
+import io.github.swagger2markup.Swagger2MarkupConfig;
+import io.github.swagger2markup.Swagger2MarkupConverter;
+import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
+import io.github.swagger2markup.markup.builder.MarkupLanguage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,6 +66,26 @@ public class AnnotatorApiApplicationTests {
     public void testAn() throws IOException {
 
     }
+//    /**
+//     * 生成Markdown格式文档
+//     * @throws Exception
+//     */
+//    @Test
+//    public void generateMarkdownDocs() throws Exception {
+//        //    输出Markdown格式
+//        Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
+//                .withMarkupLanguage(MarkupLanguage.MARKDOWN)
+//                .withOutputLanguage(Language.EN)
+//                .withPathsGroupedBy(GroupBy.TAGS)
+//                .withGeneratedExamples()
+//                .withoutInlineSchema()
+//                .build();
+//
+//        Swagger2MarkupConverter.from(new URL("http://localhost:7000/v2/api-docs"))
+//                .withConfig(config)
+//                .build()
+//                .toFolder(Paths.get("./docs/markdown/generated"));
+//    }
 
 
 //        Long id=Long.valueOf("1");
