@@ -5,12 +5,11 @@ import java.util.Map;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.SysUserEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.SysUserService;
@@ -24,6 +23,7 @@ import cjlu.skyline.ecms_data_annotator.api.service.SysUserService;
  * @email nsp4289@autuni.ac.nz
  * @date 2021-03-09 23:46:56
  */
+@Api("Manage System Users")
 @RestController
 @RequestMapping("api/sysuser")
 public class SysUserController {
@@ -33,7 +33,9 @@ public class SysUserController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("Get all User list")
+    @ApiImplicitParam(name = "params", value = "All Users")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = sysUserService.queryPage(params);
 
@@ -44,7 +46,9 @@ public class SysUserController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{userId}")
+    @ApiOperation("Get User information by ID")
+    @ApiImplicitParam(name = "userId", value = "User's ID")
+    @GetMapping("/info/{userId}")
     public R info(@PathVariable("userId") Long userId){
 		SysUserEntity sysUser = sysUserService.getById(userId);
 
@@ -54,7 +58,9 @@ public class SysUserController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save User information ")
+    @ApiImplicitParam(name = "sysUser", value = "User information")
+    @PostMapping("/save")
     public R save(@RequestBody SysUserEntity sysUser){
 		sysUserService.save(sysUser);
 
@@ -64,7 +70,9 @@ public class SysUserController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @ApiOperation("Update User information ")
+    @ApiImplicitParam(name = "sysUser", value = "New User information")
+    @PostMapping("/update")
     public R update(@RequestBody SysUserEntity sysUser){
 		sysUserService.updateById(sysUser);
 
@@ -74,7 +82,9 @@ public class SysUserController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @ApiOperation("Delete User information ")
+    @ApiImplicitParam(name = "userIds", value = "Users ID")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] userIds){
 		sysUserService.removeByIds(Arrays.asList(userIds));
 

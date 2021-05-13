@@ -3,12 +3,11 @@ package cjlu.skyline.ecms_data_annotator.api.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cjlu.skyline.ecms_data_annotator.api.entity.DocStateEntity;
 import cjlu.skyline.ecms_data_annotator.api.service.DocStateService;
@@ -24,6 +23,8 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
  * @email nsp4289@autuni.ac.nz
  * @date 2021-01-11 15:35:15
  */
+@Api("Manage documents information")
+
 @RestController
 @RequestMapping("annotator/docstate")
 public class DocStateController {
@@ -33,7 +34,9 @@ public class DocStateController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("Get document's states list")
+    @ApiImplicitParam(name = "params", value = "documents' states")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = docStateService.queryPage(params);
 
@@ -44,7 +47,9 @@ public class DocStateController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{docStatId}")
+    @ApiOperation("Get document state by ID")
+    @ApiImplicitParam(name = "docStatId", value = "document state ID")
+    @GetMapping("/info/{docStatId}")
     public R info(@PathVariable("docStatId") Long docStatId){
 		DocStateEntity docState = docStateService.getById(docStatId);
 
@@ -54,7 +59,9 @@ public class DocStateController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save new document state")
+    @ApiImplicitParam(name = "docLabel",value = "document state,like approved ,rejected,wait for annotating")
+    @PostMapping("/save")
     public R save(@RequestBody DocStateEntity docState){
 		docStateService.save(docState);
 
@@ -64,7 +71,9 @@ public class DocStateController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @ApiOperation("Update document state")
+    @ApiImplicitParam(name = "docState",value = "document state")
+    @PostMapping("/update")
     public R update(@RequestBody DocStateEntity docState){
 		docStateService.updateById(docState);
 
@@ -74,7 +83,9 @@ public class DocStateController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @ApiOperation("Delete document states")
+    @ApiImplicitParam(name = "docLabelIds",value = "document states IDs")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] docStatIds){
 		docStateService.removeByIds(Arrays.asList(docStatIds));
 

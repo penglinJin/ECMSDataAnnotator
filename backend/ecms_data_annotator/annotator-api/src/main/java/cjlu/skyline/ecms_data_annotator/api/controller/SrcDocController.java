@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,7 @@ import cjlu.skyline.ecms_data_annotator.common.utils.R;
  * @date 2021-01-11 15:35:16
  */
 @Log
+@Api("Manage Source documents")
 @RestController
 @RequestMapping("annotator/srcdoc")
 public class SrcDocController {
@@ -37,18 +41,8 @@ public class SrcDocController {
     @Value("${tmp.location}")
     private String tmpLocation;
 
-    /**
-     *
-     * @param
-     * @return cjlu.skyline.ecms_data_annotator.common.utils.R
-     * @author 金鹏霖
-     * @date 2021/4/8
-     */
-    @GetMapping("/exportFile")
-    public R exportFile() {
-        return R.ok();
-    }
 
+    @ApiOperation("Export annotated files")
     @GetMapping("/downloadFile")
     public ResponseEntity<FileSystemResource> downloadFile() {
         ResponseEntity<FileSystemResource> downloadFile = null;
@@ -71,6 +65,7 @@ public class SrcDocController {
         return srcDocService.annotate(labelIds, userId, docId,htmlContent);
     }
 
+    @ApiOperation("Process Dataset to small slice")
     @PostMapping("/process")
     public R processDataset(@RequestParam("filePath") String filePath, @RequestParam("userId") Long userId) {
         if (StringUtils.isEmpty(filePath)) {
@@ -82,7 +77,9 @@ public class SrcDocController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("Get Source Documents list")
+    @ApiImplicitParam(name = "params", value = "source documents")
+    @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = srcDocService.queryPage(params);
 
@@ -93,7 +90,9 @@ public class SrcDocController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{srcDocId}")
+    @ApiOperation("Get Source Document information by ID")
+    @ApiImplicitParam(name = "srcDocId", value = "source document ID")
+    @GetMapping("/info/{srcDocId}")
     public R info(@PathVariable("srcDocId") Long srcDocId) {
         SrcDocEntity srcDoc = srcDocService.getById(srcDocId);
 
@@ -103,7 +102,9 @@ public class SrcDocController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @ApiOperation("Save Source Document information ")
+    @ApiImplicitParam(name = "srcDoc", value = "New source document ")
+    @PostMapping("/save")
     public R save(@RequestBody SrcDocEntity srcDoc) {
         srcDocService.save(srcDoc);
 
@@ -113,7 +114,9 @@ public class SrcDocController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @ApiOperation("Update Source Document information ")
+    @ApiImplicitParam(name = "srcDoc", value = "updated source document ")
+    @PostMapping("/update")
     public R update(@RequestBody SrcDocEntity srcDoc) {
         srcDocService.updateById(srcDoc);
 
@@ -123,7 +126,9 @@ public class SrcDocController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @ApiOperation("Delete Source Document information ")
+    @ApiImplicitParam(name = "srcDocIds", value = "source documents ID")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] srcDocIds) {
         srcDocService.removeByIds(Arrays.asList(srcDocIds));
 
