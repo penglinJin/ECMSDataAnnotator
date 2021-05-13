@@ -58,6 +58,7 @@ public class DocControllerTest {
         params.put("page","1");
         params.put("limit","10");
         params.put("content","");
+
         R list = docController.list(params);
         PageUtils page = (PageUtils) list.get("page");
         List<?> list1 = page.getList();
