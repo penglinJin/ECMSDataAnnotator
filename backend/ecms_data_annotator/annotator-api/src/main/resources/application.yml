@@ -6,9 +6,20 @@ spring:
         namespace: 25fc9471-0059-4f86-874e-87d9ce3ff654
   application:
     name: annotator-api
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/ecms_data_annotator?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
   port: 7000
 
-#tmp:
-#  location: E:\tmp\exportData.json
+tmp:
+  location: /tmp/export.json
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto

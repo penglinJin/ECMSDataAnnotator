@@ -80,6 +80,9 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
             docStatList.forEach(item->{
                 docIdList.add(item.getDocId());
             });
+
+        List<DocEntity> list = docService.list();
+        if (list.size()>0){
             IPage<DocEntity> page = this.page(
                     new Query<DocEntity>().getPage(params),
                     new QueryWrapper<DocEntity>().in("doc_id",docIdList)
@@ -123,6 +126,11 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
 
 
             return new PageUtils(convert);
+        }else {
+            return new PageUtils(list,0,10,1);
+        }
+
+
 
 
 
