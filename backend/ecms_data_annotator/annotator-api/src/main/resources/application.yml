@@ -3,7 +3,7 @@ spring:
     nacos:
       discovery:
         server-addr: 120.27.216.110:8848
-        namespace: 31b8f05d-c37f-4f3c-a470-4e2b210cd683
+        namespace: 25fc9471-0059-4f86-874e-87d9ce3ff654
   application:
     name: annotator-api
 
