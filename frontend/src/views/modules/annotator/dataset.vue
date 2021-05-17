@@ -66,8 +66,11 @@
         <el-button type="primary" @click="exportDataset()"
           >Export JSON Dataset</el-button
         >
-          <el-button type="primary" @click="exportDatasetCSV()"
+        <el-button type="primary" @click="exportDatasetCSV()"
           >Export CSV Dataset</el-button
+        >
+        <el-button type="primary" @click="exportDatasetXML()"
+          >Export XML Dataset</el-button
         >
         <el-button
           v-if="isAuth('annotator:doc:deleteBatch')"
@@ -374,6 +377,29 @@ export default {
     makeSpanMap() {
       console.log('makeSpanMap----------------------------------------')
       console.log(this.docContent)
+    },
+    exportDatasetXML(){
+      this.$http({
+        url: this.$http.adornUrl("/annotator/srcdoc/downloadXML"),
+        method: "get",
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        console.log(data);
+      if (!data) {
+        return;
+      }
+      
+      let BLOB = new Blob([data]);
+      let url = window.URL.createObjectURL(BLOB);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+
+      link.setAttribute("download", "exportData.xml");
+      
+      document.body.appendChild(link);
+      link.click();
+      });
     },
     exportDatasetCSV(){
         this.$http({

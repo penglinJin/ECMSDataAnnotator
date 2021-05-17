@@ -1,15 +1,16 @@
 package cjlu.skyline.ecms_data_annotator.api.utils;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Map;
+
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.util.*;
 
 /**
@@ -21,35 +22,61 @@ import java.util.*;
 public class ApiUtils {
 
 
-//    public synchronized static File getExportJson(List<JSONObject> jsonObjects,String tmpLocation) {
-//
-//        try{
-//            File file=new File(tmpLocation);
-//            if (file.exists()){
-//                file.delete();
-//            }
-//            FileWriter fileWriter=new FileWriter(file);
-//            PrintWriter printWriter = new PrintWriter(fileWriter);
-//
-//
-//            JSONArray jsonArray = new JSONArray();
-//            jsonObjects.forEach(e->{
-//                jsonArray.add(e);
-////                String s = e.toJSONString();
-////                printWriter.write(s+"\n");
-//            });
-//
-//            String s = jsonArray.toString();
-//            printWriter.write(s);
-//            printWriter.close();
-//
-//            return file;
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    private static JacksonXmlModule module = new JacksonXmlModule();
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static XmlMapper xmlMapper = new XmlMapper(module);
+    static{
+        //去掉xml顶部内容<?xml version="1.0" encoding="UTF-8" ?>
+        module.setDefaultUseWrapper(false);
+    }
+
+    /**
+     * xml字符串转换成net.sf.json.JSONObject对象
+     * @param xmlStr
+     * @return
+     */
+    public static JSONObject xml2jsonObj(String xmlStr){
+        JSONObject jsonObject = XML.toJSONObject(xmlStr);
+        return jsonObject;
+    }
+
+    /**
+     * xml字符串转换成json字符串
+     * @param xmlStr
+     * @return
+     */
+    public static String xml2jsonStr(String xmlStr){
+        JSONObject jsonObject = XML.toJSONObject(xmlStr);
+        return jsonObject.toString();
+    }
+
+    /**
+     * json字符串转换成xml字符串
+     * @param jsonStr
+     * @return
+     */
+    public static String json2xml(String jsonStr){
+        try {
+            JsonNode root = objectMapper.readTree(jsonStr);
+            String result = xmlMapper.writeValueAsString(root);
+            return result.replaceAll("</?ObjectNode>","");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * map数据转换成xml字符串
+     * @param mapData
+     * @return
+     */
+    public static String map2xml(Map<String,Object> mapData){
+        Object repinfoJsonObj = JSONObject.wrap(mapData);
+        String jsonStr=repinfoJsonObj.toString();
+        String result=json2xml(jsonStr);
+        return result;
+    }
 
     public static String transToString(List<Long> labelList){
         StringBuilder stringBuilder = new StringBuilder();

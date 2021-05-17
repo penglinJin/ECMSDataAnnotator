@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import cjlu.skyline.ecms_data_annotator.api.utils.ApiUtils;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +44,14 @@ public class SrcDocController {
 //    @Value("${tmp.location}")
 //    private String tmpLocation;
 
+    @ApiOperation("Export XML")
+    @GetMapping("/downloadXML")
+    public String downloadXML(){
+        JSONArray jsonArray = srcDocService.downloadFile();
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("doc",jsonArray);
+        return ApiUtils.json2xml(jsonObject.toJSONString());
+    }
 
     @ApiOperation("Export CSV")
     @GetMapping("/downloadCSV")
