@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -38,17 +39,20 @@ public class SrcDocController {
     @Autowired
     private SrcDocService srcDocService;
 
-    @Value("${tmp.location}")
-    private String tmpLocation;
+//    @Value("${tmp.location}")
+//    private String tmpLocation;
 
+
+    @ApiOperation("Export CSV")
+    @GetMapping("/downloadCSV")
+    public String downloadCSV(){
+        return srcDocService.downloadCSV();
+    }
 
     @ApiOperation("Export annotated files")
     @GetMapping("/downloadFile")
-    public ResponseEntity<FileSystemResource> downloadFile() {
-        ResponseEntity<FileSystemResource> downloadFile = null;
-        downloadFile = srcDocService.downloadFile(tmpLocation);
-
-        return downloadFile;
+    public JSONArray downloadFile() {
+        return srcDocService.downloadFile();
     }
 
 

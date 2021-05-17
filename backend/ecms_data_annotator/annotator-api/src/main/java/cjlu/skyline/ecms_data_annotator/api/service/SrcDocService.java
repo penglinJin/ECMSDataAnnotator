@@ -1,6 +1,7 @@
 package cjlu.skyline.ecms_data_annotator.api.service;
 
 import cjlu.skyline.ecms_data_annotator.common.utils.R;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cjlu.skyline.ecms_data_annotator.common.utils.PageUtils;
 import cjlu.skyline.ecms_data_annotator.api.entity.SrcDocEntity;
@@ -24,6 +25,8 @@ public interface SrcDocService extends IService<SrcDocEntity> {
 
     R annotate(Long[] labelIds, Long userId, Long docId,String htmlContent);
 
-    ResponseEntity<FileSystemResource> downloadFile(String tmpLocation);
+    JSONArray downloadFile();
+
+    String downloadCSV();
 }
 

@@ -1,5 +1,6 @@
 package cjlu.skyline.ecms_data_annotator.api.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,28 +21,35 @@ import java.util.*;
 public class ApiUtils {
 
 
-    public synchronized static File getExportJson(List<JSONObject> jsonObjects,String tmpLocation) {
-        try{
-            File file=new File(tmpLocation);
-            if (file.exists()){
-                file.delete();
-            }
-            FileWriter fileWriter=new FileWriter(file);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            jsonObjects.forEach(e->{
-                String s = e.toJSONString();
-                printWriter.write(s+"\n");
-            });
-            printWriter.close();
-
-            return file;
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public synchronized static File getExportJson(List<JSONObject> jsonObjects,String tmpLocation) {
+//
+//        try{
+//            File file=new File(tmpLocation);
+//            if (file.exists()){
+//                file.delete();
+//            }
+//            FileWriter fileWriter=new FileWriter(file);
+//            PrintWriter printWriter = new PrintWriter(fileWriter);
+//
+//
+//            JSONArray jsonArray = new JSONArray();
+//            jsonObjects.forEach(e->{
+//                jsonArray.add(e);
+////                String s = e.toJSONString();
+////                printWriter.write(s+"\n");
+//            });
+//
+//            String s = jsonArray.toString();
+//            printWriter.write(s);
+//            printWriter.close();
+//
+//            return file;
+//        }
+//        catch (IOException e){
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public static String transToString(List<Long> labelList){
         StringBuilder stringBuilder = new StringBuilder();
