@@ -85,7 +85,7 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
         if (list.size()>0){
             IPage<DocEntity> page = this.page(
                     new Query<DocEntity>().getPage(params),
-                    new QueryWrapper<DocEntity>().in("doc_id",docIdList)
+                    new QueryWrapper<DocEntity>().in("doc_id",docIdList).select().orderByDesc("create_time")
             );
 
 
@@ -119,17 +119,14 @@ public class DocServiceImpl extends ServiceImpl<DocDao, DocEntity> implements Do
                 docVos.add(i);
             });
 
-
             docVos.sort(Comparator.comparing(DocVo::getCreateTime).reversed());
             convert.setRecords(docVos);
-
 
 
             return new PageUtils(convert);
         }else {
             return new PageUtils(list,0,10,1);
         }
-
 
 
 

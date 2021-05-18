@@ -312,7 +312,44 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
      * @return org.springframework.http.ResponseEntity<org.springframework.core.io.FileSystemResource>
      */
     @Override
-    public ResponseEntity<FileSystemResource> downloadFile(String tmpLocation) {
+    public JSONArray downloadFile() {
+        //1.collect all docs
+        List<DocEntity> docEntities = docService.list();
+        List<JSONObject> jsonObjects=new ArrayList<>();
+        JSONArray returnArray = new JSONArray();
+        for(int i=0;i<docEntities.size();i++){
+            DocEntity docEntity=docEntities.get(i);
+            //2.each doc form to a jsonObject as a line in final json file
+            JSONObject object=new JSONObject();
+            object.put("id",docEntity.getDocId());
+            object.put("text",docEntity.getDocContent());
+            JSONArray jsonArray=new JSONArray();
+
+            QueryWrapper<DocLabelEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("doc_id",docEntity.getDocId());
+            List<DocLabelEntity> list = docLabelService.list(queryWrapper);
+            list.forEach(item->{
+                AnnotationDto annotationDto=new AnnotationDto();
+                annotationDto.setLabelId(item.getLabelId());
+                LabelInfoEntity label = labelInfoService.getById(item.getLabelId());
+                annotationDto.setLabelName(label.getLabelContent());
+                AnnotatorRecordEntity record = annotatorRecordService.getLabelApproveRecord(item.getLabelId());
+                QueryWrapper<SysUserEntity> queryWrapper1=new QueryWrapper<>();
+                queryWrapper1.eq("user_id",record.getUserId());
+                SysUserEntity one = sysUserService.getOne(queryWrapper1);
+                annotationDto.setApprover(one.getUsername());
+                annotationDto.setCreatedAt(record.getCreateTime());
+                jsonArray.add(annotationDto);
+            });
+            object.put("annotations",jsonArray);
+            jsonObjects.add(object);
+            returnArray.add(object);
+        }
+        return returnArray;
+    }
+
+    @Override
+    public String downloadCSV() {
         //1.collect all docs
         List<DocEntity> docEntities = docService.list();
         List<JSONObject> jsonObjects=new ArrayList<>();
@@ -343,27 +380,53 @@ public class SrcDocServiceImpl extends ServiceImpl<SrcDocDao, SrcDocEntity> impl
             object.put("annotations",jsonArray);
             jsonObjects.add(object);
         }
-        return export(ApiUtils.getExportJson(jsonObjects,tmpLocation));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"id\",\"text\",\"annotations_labelName\",\"annotations_labelId\",\"annotations_approver\",\"annotations_createdAt\"");
+        sb.append("\r\n");
+        jsonObjects.forEach(e->{
+            JSONArray annotations = (JSONArray) e.get("annotations");
+            String id = Long.toString((Long) e.get("id"));
+            String text = (String) e.get("text");
+            if (annotations.size()==0){
+                sb.append("\""+id+"\",");
+                sb.append("\""+text+"\",");
+                sb.append("\"\",\"\",\"\",\"\"");
+                sb.append("\r\n");
+            }
+            for (int i=0;i<annotations.size();i++){
+                AnnotationDto annotationDto = (AnnotationDto) annotations.get(i);
+                sb.append("\""+id+"\",");
+                sb.append("\""+text+"\",");
+                sb.append("\""+annotationDto.getLabelName()+"\",");
+                sb.append("\""+annotationDto.getLabelId()+"\",");
+                sb.append("\""+annotationDto.getApprover()+"\",");
+                sb.append("\""+annotationDto.getCreatedAt()+"\"");
+                sb.append("\r\n");
+            }
+        });
+        String s=sb.toString();
+        return s;
     }
 
-    public ResponseEntity<FileSystemResource> export(File file) {
-        if (file == null) {
-            return null;
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Content-Disposition", "attachment; filename=" + file.getName());
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.add("Last-Modified", new Date().toString());
-        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(new FileSystemResource(file));
-    }
+//    public ResponseEntity<FileSystemResource> export(File file) {
+//        if (file == null) {
+//            return null;
+//        }
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//        headers.add("Content-Disposition", "attachment; filename=" + file.getName());
+//        headers.add("Pragma", "no-cache");
+//        headers.add("Expires", "0");
+//        headers.add("Last-Modified", new Date().toString());
+//        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+//        return ResponseEntity
+//                .ok()
+//                .headers(headers)
+//                .contentLength(file.length())
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(new FileSystemResource(file));
+//    }
 
 
 }

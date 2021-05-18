@@ -22,5 +22,21 @@ public class DocVo extends DocEntity {
 
     private String img;
 
-
+    @Override
+    public String toString() {
+        return "DocEntity{" +
+                "docId=" + getDocId() +
+                ", docName='" + getDocName() + '\'' +
+                ", srcDocId=" + getSrcDocId() +
+                ", docContent='" + getDocContent() + '\'' +
+                ", docType=" + getDocType() +
+                ", createTime=" + getCreateTime() +
+                ", createUserId=" + getCreateUserId() +
+                ", nlpLabel='" + getNlpLabel() + '\'' +
+                ", htmlContent='" + getHtmlContent() + '\'' +
+                ", labels='" + labels + '\'' +
+                ", docState='" + docState + '\'' +
+                ", img='" + img + '\'' +
+                '}';
+    }
 }
